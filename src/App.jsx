@@ -11,6 +11,9 @@ import { RouterProvider } from "react-router-dom";
 const Navbar = lazy(() => import("./Layout/Navbar"));
 const Footer = lazy(() => import("./Layout/Footer"));
 const Home = lazy(() => import("./pages/Home/Home"));
+const CategoriesList = lazy(() => import("./pages/Category/CategoriesList"));
+const CategoryPage = lazy(() => import("./pages/Category/CategoryPage"));
+const NotFound = lazy(() => import("./pages/NotFound/NotFound"));
 
 const Layout = () => {
   return (
@@ -47,8 +50,10 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />}/>
-        <Route path="*" element={<div>404 page not found</div>} />
+        <Route index element={<Home />} />
+        <Route path="category" element={<CategoriesList />} />
+        <Route path="category/:categoryName" element={<CategoryPage />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     )
   );

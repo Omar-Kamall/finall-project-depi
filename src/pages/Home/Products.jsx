@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   getProductsSortedByRating,
   getCategories,
@@ -20,17 +21,17 @@ const Products = () => {
       try {
         // Fetch top rated products
         const topRatedData = await getProductsSortedByRating("desc", 4);
-        
+
         // Fetch categories
         const categoriesData = await getCategories();
-        
+
         // Fetch products for each category
         const categoryProducts = {};
         for (const category of categoriesData) {
           const products = await getProductsByCategory(category);
           categoryProducts[category] = products;
         }
-        
+
         if (isMounted) {
           setTopRated(topRatedData);
           setCategories(categoriesData);
@@ -80,18 +81,41 @@ const Products = () => {
       {/* Products by Category */}
       {categories.map((category) => (
         <div key={category} className="mb-12">
-          <h2 className="font-bold text-2xl mb-6 capitalize">{category}:</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {productsByCategory[category]?.map((p) => (
-              <Card
-                key={p.id}
-                imageSrc={p.image}
-                title={p.title}
-                price={p.price}
-                rating={p.rating?.rate}
-                reviewCount={p.rating?.count}
-              />
-            )).slice(0, 4)}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-bold text-2xl capitalize">{category}:</h2>
+            <Link
+              to={`/category/${encodeURIComponent(category)}`}
+              className="text-sm font-medium text-purple-600 hover:text-purple-700 transition flex items-center gap-1"
+            >
+              View All
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {productsByCategory[category]
+              ?.map((p) => (
+                <Card
+                  key={p.id}
+                  imageSrc={p.image}
+                  title={p.title}
+                  price={p.price}
+                  rating={p.rating?.rate}
+                  reviewCount={p.rating?.count}
+                />
+              ))
+              .slice(0, 4)}
           </div>
         </div>
       ))}
