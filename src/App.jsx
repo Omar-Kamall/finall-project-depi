@@ -6,6 +6,7 @@ import {
   Route,
 } from "react-router";
 import { RouterProvider } from "react-router-dom";
+import Loading from "./components/Loading";
 
 // Import Components
 const Navbar = lazy(() => import("./Layout/Navbar"));
@@ -20,13 +21,7 @@ const Layout = () => {
     <>
       <Navbar />
       {/* Suspense is for each page can show a loader */}
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center h-screen text-red-600 text-4xl">
-            loading...
-          </div>
-        }
-      >
+      <Suspense fallback={<Loading message="Loading page..." fullScreen />}>
         <Outlet />
       </Suspense>
       <Footer />
@@ -61,9 +56,7 @@ const App = () => {
   return (
     <>
       {loading ? (
-        <div className="flex items-center justify-center h-screen text-red-600 text-4xl">
-          loading...
-        </div>
+        <Loading message="Initializing..." fullScreen />
       ) : (
         <RouterProvider router={router} />
       )}

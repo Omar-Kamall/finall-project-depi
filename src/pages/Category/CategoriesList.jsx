@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getCategories, getProductsByCategory } from "../../api/Products";
+import Loading from "../../components/Loading";
 
 const CategoriesList = () => {
   const [categories, setCategories] = useState([]);
@@ -65,18 +66,7 @@ const CategoriesList = () => {
 
   // Loading state
   if (loading) {
-    return (
-      <section className="min-h-screen bg-gray-50 py-8">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center py-20">
-            <div className="text-center">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-purple-600 border-r-transparent"></div>
-              <p className="mt-4 text-sm text-gray-600">Loading categories...</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
+    return <Loading message="Loading categories..." fullScreen />;
   }
 
   // Error state

@@ -7,6 +7,7 @@ import {
   getProductsByCategory,
 } from "../../api/Products";
 import Card from "../../components/Card";
+import Loading from "../../components/Loading";
 
 const Products = () => {
   const [topRated, setTopRated] = useState([]);
@@ -50,8 +51,8 @@ const Products = () => {
 
   if (loading)
     return (
-      <section className="py-10 text-center text-sm text-gray-500">
-        Loading products...
+      <section className="py-10">
+        <Loading message="Loading products..." />
       </section>
     );
   if (error)
