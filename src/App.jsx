@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from "react";
+import { lazy, useEffect, useState, Suspense } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -10,12 +10,22 @@ import { RouterProvider } from "react-router-dom";
 // Import Components
 const Navbar = lazy(() => import("./Layout/Navbar"));
 const Footer = lazy(() => import("./Layout/Footer"));
+const Home = lazy(() => import("./pages/Home/Home"));
 
 const Layout = () => {
   return (
     <>
       <Navbar />
-      <Outlet />
+      {/* Suspense is for each page can show a loader */}
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center h-screen text-red-600 text-4xl">
+            loading...
+          </div>
+        }
+      >
+        <Outlet />
+      </Suspense>
       <Footer />
     </>
   );
@@ -29,7 +39,7 @@ const App = () => {
   useEffect(() => {
     const timeOut = setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 0);
     return () => clearTimeout(timeOut);
   }, []);
 
@@ -37,7 +47,8 @@ const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />}>
-        <Route />
+        <Route index element={<Home />}/>
+        <Route path="*" element={<div>404 page not found</div>} />
       </Route>
     )
   );
