@@ -28,7 +28,7 @@ const Footer = () => {
               </p>
               <div className="!mb-4">
                 <div className="flex items-start !gap-2 !mb-2">
-                  <HiOutlinePhone className="text-gray-600 mt-1" />
+                  <HiOutlinePhone className="text-gray-600 mt-1 text-3xl" />
                   <div>
                     <p className="text-xs text-gray-600">Monday-Friday: 08am-9pm</p>
                     <p className="text-lg font-bold text-gray-800">0 800 300-353</p>
@@ -37,7 +37,7 @@ const Footer = () => {
               </div>
               <div>
                 <div className="flex items-start gap-2">
-                  <HiMail className="text-gray-600 mt-1" />
+                  <HiMail className="text-gray-600 mt-1 text-3xl" />
                   <div>
                     <p className="text-xs text-gray-600">Need help with your order?</p>
                     <Link
