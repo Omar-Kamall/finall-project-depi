@@ -72,9 +72,11 @@ const Products = () => {
             key={p.id}
             imageSrc={p.image}
             title={p.title}
-            price={p.price}
+            oldPrice={p.price}
+            price={((100 - p.id) / 100) * p.price}
             rating={p.rating?.rate}
             reviewCount={p.rating?.count}
+            discountPercent={p.id}
           />
         ))}
       </div>
