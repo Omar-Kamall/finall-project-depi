@@ -148,7 +148,7 @@ const CategoriesList = () => {
               >
                 {/* Category Icon/Decoration */}
                 <div className="mb-4 flex items-center justify-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-100 to-purple-200 group-hover:from-purple-200 group-hover:to-purple-300 transition">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-purple-100 to-purple-200 group-hover:from-purple-200 group-hover:to-purple-300 transition">
                     <svg
                       className="h-8 w-8 text-purple-600"
                       fill="none"

@@ -1,4 +1,3 @@
-import React from "react";
 import Payment from "../../Imgs/Payment.svg";
 import Sales from "../../Imgs/sales.svg";
 import quality from "../../Imgs/Quality.svg";

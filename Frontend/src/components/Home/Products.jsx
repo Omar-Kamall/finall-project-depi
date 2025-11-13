@@ -6,8 +6,8 @@ import {
   getCategories,
   getProductsByCategory,
 } from "../../api/Products";
-import Card from "../../components/Card";
-import Loading from "../../components/Loading";
+import Card from "../Card";
+import Loading from "../Loading";
 
 const Products = () => {
   const [topRated, setTopRated] = useState([]);

@@ -11,10 +11,10 @@ import Loading from "./components/Loading";
 // Import Components
 const Navbar = lazy(() => import("./Layout/Navbar"));
 const Footer = lazy(() => import("./Layout/Footer"));
-const Home = lazy(() => import("./pages/Home/Home"));
+const Home = lazy(() => import("./pages/Home"));
 const CategoriesList = lazy(() => import("./pages/Category/CategoriesList"));
 const CategoryPage = lazy(() => import("./pages/Category/CategoryPage"));
-const NotFound = lazy(() => import("./pages/NotFound/NotFound"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const Layout = () => {
   return (
