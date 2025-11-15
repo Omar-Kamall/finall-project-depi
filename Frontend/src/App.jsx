@@ -5,7 +5,7 @@ import {
   Outlet,
   Route,
 } from "react-router";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider, ScrollRestoration } from "react-router-dom";
 import Loading from "./components/Loading";
 
 // Import Components
@@ -14,6 +14,7 @@ const Footer = lazy(() => import("./Layout/Footer"));
 const Home = lazy(() => import("./pages/Home"));
 const CategoriesList = lazy(() => import("./pages/Category/CategoriesList"));
 const CategoryPage = lazy(() => import("./pages/Category/CategoryPage"));
+const ProductDetails = lazy(() => import("./pages/Product/ProductDetails"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const Layout = () => {
@@ -24,6 +25,8 @@ const Layout = () => {
       <Suspense fallback={<Loading message="Loading page..." fullScreen />}>
         <Outlet />
       </Suspense>
+      {/* Reset scroll to top on path changes */}
+      <ScrollRestoration getKey={({ pathname }) => pathname} />
       <Footer />
     </>
   );
@@ -48,6 +51,7 @@ const App = () => {
         <Route index element={<Home />} />
         <Route path="category" element={<CategoriesList />} />
         <Route path="category/:categoryName" element={<CategoryPage />} />
+        <Route path="product/:id" element={<ProductDetails />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     )
