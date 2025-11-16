@@ -70,6 +70,7 @@ const Products = () => {
         {topRated.map((p) => (
           <Card
             key={p.id}
+            id={p.id}
             imageSrc={p.image}
             title={p.title}
             oldPrice={p.price}
@@ -111,6 +112,7 @@ const Products = () => {
               ?.map((p) => (
                 <Card
                   key={p.id}
+                  id={p.id}
                   imageSrc={p.image}
                   title={p.title}
                   price={p.price}

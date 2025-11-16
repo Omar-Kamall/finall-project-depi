@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 const Card = ({
   imageSrc,
   title,
@@ -7,6 +8,7 @@ const Card = ({
   rating,
   reviewCount,
   inStock = true,
+  id,
 }) => {
   const hasDiscount =
     typeof discountPercent === "number" && discountPercent > 0;
@@ -40,11 +42,13 @@ const Card = ({
       {/* Image */}
       <div className="relative aspect-4/3 w-full overflow-hidden rounded-lg bg-gray-50">
         {imageSrc ? (
-          <img
-            src={imageSrc}
-            alt={title || "product image"}
-            className="h-full w-full object-contain object-center transition duration-300 group-hover:scale-[1.02]"
-          />
+          <Link to={id ? `/product/${id}` : "#"}>
+            <img
+              src={imageSrc}
+              alt={title || "product image"}
+              className="h-full w-full object-contain object-center transition duration-300 group-hover:scale-[1.02]"
+            />
+          </Link>
         ) : (
           <div className="flex h-full w-full items-center justify-center text-gray-300">
             Image
@@ -55,8 +59,14 @@ const Card = ({
       {/* Content */}
       <div className="mt-3 space-y-2">
         {/* Title */}
-        <h3 className="line-clamp-2 text-sm font-medium text-gray-900">
-          {title || "Product name goes here"}
+        <h3 className="truncate text-sm font-medium text-gray-900">
+          {id ? (
+            <Link to={`/product/${id}`} className="hover:text-purple-600 transition">
+              {title || "Product name goes here"}
+            </Link>
+          ) : (
+            title || "Product name goes here"
+          )}
         </h3>
 
         {/* Rating */}

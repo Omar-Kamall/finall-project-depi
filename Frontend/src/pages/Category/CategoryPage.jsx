@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { getProductsByCategory, getCategories } from "../../api/Products";
 import Card from "../../components/Card";
 import Loading from "../../components/Loading";
+import CategoryFilter from "../../components/CategoryFilter";
 
 const CategoryPage = () => {
   const { categoryName } = useParams();
@@ -10,6 +11,8 @@ const CategoryPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isValidCategory, setIsValidCategory] = useState(true);
+  const [filters, setFilters] = useState({ minPrice: null, maxPrice: null });
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -40,6 +43,8 @@ const CategoryPage = () => {
         if (isMounted) {
           setProducts(categoryProducts);
           setIsValidCategory(true);
+          // reset filters when category changes
+          setFilters({ minPrice: null, maxPrice: null });
         }
       } catch (e) {
         if (isMounted) {
@@ -68,6 +73,16 @@ const CategoryPage = () => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(" ");
   };
+
+  // Apply price filters to products
+  const displayedProducts = products.filter((p) => {
+    const price = Number(p.price) || 0;
+    const withinMin =
+      filters.minPrice == null ? true : price >= Number(filters.minPrice);
+    const withinMax =
+      filters.maxPrice == null ? true : price <= Number(filters.maxPrice);
+    return withinMin && withinMax;
+  });
 
   // Loading state
   if (loading) {
@@ -189,28 +204,106 @@ const CategoryPage = () => {
         </nav>
 
         {/* Category Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 capitalize mb-2">
-            {formatCategoryName(categoryName)}
-          </h1>
-          <p className="text-gray-600">
-            {products.length} {products.length === 1 ? "product" : "products"} found
-          </p>
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 capitalize mb-1">
+              {formatCategoryName(categoryName)}
+            </h1>
+            <p className="text-gray-600">
+              {displayedProducts.length}{" "}
+              {displayedProducts.length === 1 ? "product" : "products"} found
+            </p>
+          </div>
+          {/* Mobile filter toggle */}
+          <button
+            type="button"
+            onClick={() => setShowFilters((s) => !s)}
+            className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50 lg:hidden"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              className="mr-2 h-5 w-5 text-purple-600"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3.75 5.25h16.5m-13.5 6h10.5m-7.5 6h4.5" />
+            </svg>
+            Filters
+          </button>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <Card
-              key={product.id}
-              imageSrc={product.image}
-              title={product.title}
-              price={product.price}
-              rating={product.rating?.rate}
-              reviewCount={product.rating?.count}
-              inStock={true}
-            />
-          ))}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          {/* Sidebar */}
+          <div className="lg:col-span-3">
+            <div className="hidden lg:block">
+              <CategoryFilter
+                products={products}
+                onApply={(vals) => setFilters(vals)}
+              />
+            </div>
+
+            {/* Mobile drawer */}
+            {showFilters && (
+              <div className="lg:hidden">
+                <div
+                  className="fixed inset-0 z-40 bg-black/40"
+                  onClick={() => setShowFilters(false)}
+                />
+                <div className="fixed inset-y-0 right-0 z-50 w-80 max-w-[85vw] overflow-y-auto bg-white p-4 shadow-xl">
+                  <div className="mb-3 flex items-center justify-between">
+                    <h2 className="text-base font-semibold text-gray-900">Filters</h2>
+                    <button
+                      type="button"
+                      className="rounded-md p-2 text-gray-500 hover:bg-gray-100"
+                      onClick={() => setShowFilters(false)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="h-5 w-5"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <CategoryFilter
+                    products={products}
+                    onApply={(vals) => {
+                      setFilters(vals);
+                      setShowFilters(false);
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Products Grid */}
+          <div className="lg:col-span-9">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+              {displayedProducts.map((product) => (
+                <Card
+                  key={product.id}
+                  id={product.id}
+                  imageSrc={product.image}
+                  title={product.title}
+                  price={product.price}
+                  rating={product.rating?.rate}
+                  reviewCount={product.rating?.count}
+                  inStock={true}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
