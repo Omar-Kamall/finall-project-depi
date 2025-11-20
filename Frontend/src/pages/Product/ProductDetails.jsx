@@ -1,17 +1,23 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { getProductById, getProductsByCategory } from "../../api/Products";
 import Loading from "../../components/Loading";
 import Card from "../../components/Card";
+import { useCart } from "../../context/CartContext";
+import { useToast } from "../../context/ToastContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const { success, error: showError } = useToast();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [related, setRelated] = useState([]);
   const [activeImage, setActiveImage] = useState(0);
   const [qty, setQty] = useState(1);
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -157,14 +163,58 @@ const ProductDetails = () => {
               {/* Quantity + actions */}
               <div className="flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center rounded-lg border border-gray-200 bg-white">
-                  <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} className="px-3 py-2 text-gray-700 hover:bg-gray-50">-</button>
-                  <span className="px-4 text-sm font-semibold text-gray-900">{qty}</span>
-                  <button type="button" onClick={() => setQty((q) => q + 1)} className="px-3 py-2 text-gray-700 hover:bg-gray-50">+</button>
+                  <button 
+                    type="button" 
+                    onClick={() => setQty((q) => Math.max(1, q - 1))} 
+                    className="px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors active:bg-gray-100"
+                    aria-label="Decrease quantity"
+                  >
+                    -
+                  </button>
+                  <span className="px-4 text-sm font-semibold text-gray-900 min-w-12 text-center">{qty}</span>
+                  <button 
+                    type="button" 
+                    onClick={() => setQty((q) => q + 1)} 
+                    className="px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors active:bg-gray-100"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
                 </div>
-                <button type="button" className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700">
-                  Add to cart
+                <button 
+                  type="button" 
+                  onClick={async () => {
+                    setAdding(true);
+                    try {
+                      await addToCart(product, qty);
+                      success(`${product.title} added to cart!`);
+                    } catch {
+                      showError("Failed to add to cart. Please try again.");
+                    } finally {
+                      setAdding(false);
+                    }
+                  }}
+                  disabled={adding}
+                  className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  {adding ? "Adding..." : "Add to cart"}
                 </button>
-                <button type="button" className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50">
+                <button 
+                  type="button" 
+                  onClick={async () => {
+                    setAdding(true);
+                    try {
+                      await addToCart(product, qty);
+                      navigate("/cart");
+                    } catch {
+                      showError("Failed to add to cart. Please try again.");
+                    } finally {
+                      setAdding(false);
+                    }
+                  }}
+                  disabled={adding}
+                  className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
                   Buy Now
                 </button>
               </div>

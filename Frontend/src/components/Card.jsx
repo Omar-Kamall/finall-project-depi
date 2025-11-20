@@ -1,4 +1,8 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
+
 const Card = ({
   imageSrc,
   title,
@@ -10,12 +14,32 @@ const Card = ({
   inStock = true,
   id,
 }) => {
+  const { addToCart } = useCart();
+  const { success, error: showError } = useToast();
+  const [adding, setAdding] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const hasDiscount =
     typeof discountPercent === "number" && discountPercent > 0;
   const hasOldPrice = typeof oldPrice === "number" && oldPrice > price;
 
+  const handleAddToCart = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!id || !inStock) return;
+    
+    setAdding(true);
+    try {
+      await addToCart({ id, price, title, image: imageSrc }, 1);
+      success(`${title} added to cart!`);
+    } catch {
+      showError("Failed to add item to cart. Please try again.");
+    } finally {
+      setAdding(false);
+    }
+  };
+
   return (
-    <article className="group relative border border-gray-200 bg-white p-3 shadow-sm transition hover:shadow-md">
+    <article className="group relative border border-gray-200 bg-white p-3 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-purple-200 hover:-translate-y-1">
       {/* Discount badge */}
       {hasDiscount && (
         <span className="absolute left-3 top-3 z-10 rounded-full bg-rose-600 px-2 py-1 text-xs font-semibold text-white">
@@ -43,10 +67,18 @@ const Card = ({
       <div className="relative aspect-4/3 w-full overflow-hidden rounded-lg bg-gray-50">
         {imageSrc ? (
           <Link to={id ? `/product/${id}` : "#"}>
+            {!imageLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600"></div>
+              </div>
+            )}
             <img
               src={imageSrc}
               alt={title || "product image"}
-              className="h-full w-full object-contain object-center transition duration-300 group-hover:scale-[1.02]"
+              onLoad={() => setImageLoaded(true)}
+              className={`h-full w-full object-contain object-center transition-transform duration-300 group-hover:scale-110 ${
+                imageLoaded ? "opacity-100" : "opacity-0"
+              }`}
             />
           </Link>
         ) : (
@@ -61,7 +93,7 @@ const Card = ({
         {/* Title */}
         <h3 className="truncate text-sm font-medium text-gray-900">
           {id ? (
-            <Link to={`/product/${id}`} className="hover:text-purple-600 transition">
+            <Link to={`/product/${id}`} className="hover:text-purple-600 transition-colors duration-200">
               {title || "Product name goes here"}
             </Link>
           ) : (
@@ -107,7 +139,9 @@ const Card = ({
         <div className="mt-3 flex items-center justify-between">
           <button
             type="button"
-            className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700"
+            onClick={handleAddToCart}
+            disabled={!inStock || adding}
+            className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +151,7 @@ const Card = ({
             >
               <path d="M2.25 3.75h2.386c.7 0 1.311.48 1.468 1.163l.23 1.011m0 0l1.204 5.3A2.25 2.25 0 009.733 12h7.286a2.25 2.25 0 002.192-1.684l1.006-4.019A1.125 1.125 0 0019.131 4.5H6.334m0 0l-.23-1.011A2.25 2.25 0 003.636 2.25H2.25M6 20.25a.75.75 0 100-1.5.75.75 0 000 1.5zm12.75 0a.75.75 0 100-1.5.75.75 0 000 1.5z" />
             </svg>
-            Add to cart
+            {adding ? "Adding..." : "Add to cart"}
           </button>
 
           <span

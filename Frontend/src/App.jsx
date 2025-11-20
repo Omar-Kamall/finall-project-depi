@@ -7,6 +7,7 @@ import {
 } from "react-router";
 import { RouterProvider, ScrollRestoration } from "react-router-dom";
 import Loading from "./components/Loading";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Import Components
 const Navbar = lazy(() => import("./Layout/Navbar"));
@@ -16,6 +17,11 @@ const CategoriesList = lazy(() => import("./pages/Category/CategoriesList"));
 const CategoryPage = lazy(() => import("./pages/Category/CategoryPage"));
 const ProductDetails = lazy(() => import("./pages/Product/ProductDetails"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const AccountPage = lazy(() => import("./pages/Auth/AccountPage"));
+const LoginPage = lazy(() => import("./pages/Auth/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/Auth/RegisterPage"));
+const ProfilePage = lazy(() => import("./pages/Auth/ProfilePage"));
+const CartPage = lazy(() => import("./pages/Cart/CartPage"));
 
 const Layout = () => {
   return (
@@ -27,6 +33,7 @@ const Layout = () => {
       </Suspense>
       {/* Reset scroll to top on path changes */}
       <ScrollRestoration getKey={({ pathname }) => pathname} />
+      <ScrollToTop />
       <Footer />
     </>
   );
@@ -52,6 +59,11 @@ const App = () => {
         <Route path="category" element={<CategoriesList />} />
         <Route path="category/:categoryName" element={<CategoryPage />} />
         <Route path="product/:id" element={<ProductDetails />} />
+        <Route path="account" element={<AccountPage />} />
+        <Route path="account/login" element={<LoginPage />} />
+        <Route path="account/register" element={<RegisterPage />} />
+        <Route path="account/profile" element={<ProfilePage />} />
+        <Route path="cart" element={<CartPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     )
