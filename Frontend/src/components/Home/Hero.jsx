@@ -13,7 +13,7 @@ const Hero = () => {
           backgroundSize: 'cover'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-r from-white/80 to-transparent"></div>
         <div className="relative grid grid-cols-1 gap-10 items-center">
           <div className="max-w-2xl">
             <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium mb-4 animate-pulse">Weekend Discount</span>

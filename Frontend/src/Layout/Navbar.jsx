@@ -121,7 +121,7 @@ const Navbar = () => {
                 className="relative cursor-pointer hover:opacity-70 transition-all duration-200 hover:scale-110"
               >
                 {/* the count will be implemented later */}
-                <Badge badgeContent={0} color="error" showZero>
+                <Badge badgeContent={0} color="error">
                   <HiOutlineHeart className="text-xl text-black" />
                 </Badge>
               </Link>
@@ -131,7 +131,7 @@ const Navbar = () => {
                 to="/cart"
                 className="relative cursor-pointer hover:opacity-70 transition-all duration-200 hover:scale-110"
               >
-                <Badge badgeContent={getTotalItems()} color="error" showZero>
+                <Badge badgeContent={getTotalItems()} color="error">
                   <HiOutlineShoppingCart className="text-xl text-black" />
                 </Badge>
               </Link>
