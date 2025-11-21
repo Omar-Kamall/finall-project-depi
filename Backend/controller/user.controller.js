@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const { email, ...updates } = req.body;
-    const userEmail = req.params.email;
+    const userEmail = req.params?.email;
 
     // check user email
     const user = await userModel.findOne({ email: userEmail });

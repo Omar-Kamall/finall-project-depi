@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const { connectDB } = require("./config/db");
 const userRoutes = require("./routes/user.routes");
 const productRoutes = require("./routes/product.routes");
+const contactRoutes = require("./routes/contact.routes");
+const orderRoutes = require("./routes/order.routes");
 const bodyParser = require("body-parser");
 
 dotenv.config();
@@ -20,6 +22,8 @@ connectDB();
 // routers uses
 app.use("/api/users" , userRoutes);
 app.use("/api" , productRoutes);
+app.use("/api/contact" , contactRoutes);
+app.use("/api/order" , orderRoutes);
 
 // listen port
 app.listen(port, () => {

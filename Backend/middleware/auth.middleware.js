@@ -2,7 +2,11 @@ const jwt = require("jsonwebtoken");
 
 module.exports = async (req, res, next) => {
   try {
-    const fullToken = await req.headers.authorization;
+    const fullToken = await req.headers?.authorization;
+    if (!fullToken) {
+      req.user = null;
+      return next();
+    }
     const token = fullToken?.split(" ")[1];
     if (!token) return res.status(403).send("Accsses Denied");
     const deCodeToken = jwt.verify(token, "secretKey");

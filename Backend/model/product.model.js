@@ -9,7 +9,9 @@ const productModel = new schema(
     description: { type: String, require: true },
     category: { type: String, require: true },
     image: { type: String, require: true },
+    imagePublicId: { type: String, require: true },
     count: { type: Number, require: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" , require: true },
   },
   {
     versionKey: false,
