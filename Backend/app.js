@@ -1,5 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
+
 const { connectDB } = require("./config/db");
 const userRoutes = require("./routes/user.routes");
 const productRoutes = require("./routes/product.routes");
@@ -12,6 +14,12 @@ const app = express();
 
 // Send Json
 app.use(bodyParser.json());
+
+// Configure CORS
+app.use(cors({
+  origin: "http://localhost:3000", // Frontend Link
+  credentials: true, // Send Tokens with Frontend
+}));
 
 // Accsses Port (.env)
 const port = process.env.PORT || 5050;
