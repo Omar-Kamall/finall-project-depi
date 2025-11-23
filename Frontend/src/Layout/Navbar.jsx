@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import logo from "../Imgs/DEPIlogoProject.svg";
 import { TextField, InputAdornment, Badge } from "@mui/material";
 import {
@@ -11,16 +11,29 @@ import {
 } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { getCategories } from "../api/Products";
+import { getCategories, getAllProducts, getProductsByCategory } from "../api/Products";
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { getTotalItems } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showCategoriesDropdown, setShowCategoriesDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const searchRef = useRef(null);
+  const suggestionsRef = useRef(null);
+
+  // Get current category from URL if on category page
+  const currentCategory = params.categoryName
+    ? decodeURIComponent(params.categoryName)
+    : null;
 
   const handleLogout = () => {
     logout();
@@ -54,6 +67,118 @@ const Navbar = () => {
       .join(" ");
   };
 
+  // Handle search submission
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Navigate to search results with query and category (if applicable)
+      const searchParams = new URLSearchParams({ q: searchQuery.trim() });
+      if (currentCategory) {
+        searchParams.set("category", currentCategory);
+      }
+      navigate(`/search?${searchParams.toString()}`);
+    }
+  };
+
+  // Clear search when navigating away from search page
+  useEffect(() => {
+    if (!location.pathname.startsWith("/search")) {
+      setSearchQuery("");
+      setShowSuggestions(false);
+    }
+  }, [location.pathname]);
+
+  // Debounced search suggestions
+  useEffect(() => {
+    const fetchSearchSuggestions = async () => {
+      if (searchQuery.trim().length < 2) {
+        setSearchSuggestions([]);
+        setShowSuggestions(false);
+        return;
+      }
+
+      try {
+        setSearchLoading(true);
+        
+        // Fetch products based on category
+        let allProducts = [];
+        if (currentCategory) {
+          allProducts = await getProductsByCategory(currentCategory);
+        } else {
+          allProducts = await getAllProducts();
+        }
+
+        // Filter products by search query (limit to 5 results)
+        const searchTerm = searchQuery.toLowerCase().trim();
+        const filtered = allProducts
+          .filter((product) => {
+            const titleMatch = product.title?.toLowerCase().includes(searchTerm);
+            const descriptionMatch = product.description?.toLowerCase().includes(searchTerm);
+            const categoryMatch = product.category?.toLowerCase().includes(searchTerm);
+            return titleMatch || descriptionMatch || categoryMatch;
+          })
+          .slice(0, 5);
+
+        setSearchSuggestions(filtered);
+        setShowSuggestions(filtered.length > 0);
+      } catch (error) {
+        console.error("Failed to fetch search suggestions:", error);
+        setSearchSuggestions([]);
+        setShowSuggestions(false);
+      } finally {
+        setSearchLoading(false);
+      }
+    };
+
+    // Debounce search
+    const timeoutId = setTimeout(() => {
+      fetchSearchSuggestions();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, currentCategory]);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target) &&
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle suggestion click
+  const handleSuggestionClick = (productId) => {
+    setShowSuggestions(false);
+    setSearchQuery("");
+    navigate(`/product/${productId}`);
+  };
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value.trim().length >= 2) {
+      setShowSuggestions(true);
+    }
+  };
+
+  // Handle search input focus
+  const handleSearchFocus = () => {
+    if (searchQuery.trim().length >= 2 && searchSuggestions.length > 0) {
+      setShowSuggestions(true);
+    }
+  };
+
   return (
     <>
       <header className="p-2! bg-white shadow-md w-full sticky top-0 left-0 right-0 z-50">
@@ -68,38 +193,111 @@ const Navbar = () => {
           </Link>
 
           {/* Middle Section - Search Bar */}
-          <div className="flex-1 max-w-2xl w-100%">
-            <TextField
-              fullWidth
-              placeholder="Search for products, categories or brands..."
-              variant="outlined"
-              size="small"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "#f3f4f6",
-                  borderRadius: "8px",
-                  "& fieldset": {
-                    borderColor: "transparent",
+          <div className="flex-1 max-w-2xl w-100% relative" ref={searchRef}>
+            <form onSubmit={handleSearch}>
+              <TextField
+                fullWidth
+                placeholder={
+                  currentCategory
+                    ? `Search in ${formatCategoryName(currentCategory)}...`
+                    : "Search for products, categories or brands..."
+                }
+                variant="outlined"
+                size="small"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "#f3f4f6",
+                    borderRadius: "8px",
+                    "& fieldset": {
+                      borderColor: "transparent",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "transparent",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "transparent",
+                    },
                   },
-                  "&:hover fieldset": {
-                    borderColor: "transparent",
+                  "& .MuiInputBase-input": {
+                    padding: "8px 12px",
                   },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "transparent",
-                  },
-                },
-                "& .MuiInputBase-input": {
-                  padding: "8px 12px",
-                },
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <HiOutlineSearch className="text-black cursor-pointer" />
-                  </InputAdornment>
-                ),
-              }}
-            />
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <button
+                        type="submit"
+                        className="cursor-pointer hover:opacity-70 transition-opacity"
+                        aria-label="Search"
+                      >
+                        <HiOutlineSearch className="text-black" />
+                      </button>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </form>
+
+            {/* Search Suggestions Dropdown */}
+            {showSuggestions && (
+              <div
+                ref={suggestionsRef}
+                className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto"
+              >
+                {searchLoading ? (
+                  <div className="p-4 text-center text-gray-500">
+                    <div className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-purple-600 border-t-transparent"></div>
+                    <p className="mt-2 text-sm">Searching...</p>
+                  </div>
+                ) : searchSuggestions.length > 0 ? (
+                  <>
+                    {searchSuggestions.map((product) => (
+                      <div
+                        key={product.id}
+                        onClick={() => handleSuggestionClick(product.id)}
+                        className="flex items-center gap-3 p-3 hover:bg-purple-50 cursor-pointer transition-colors border-b border-gray-100 last:border-b-0"
+                      >
+                        <div className="shrink-0 w-12 h-12 bg-gray-50 rounded-lg overflow-hidden">
+                          <img
+                            src={product.image}
+                            alt={product.title}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {product.title}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            ${product.price?.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    {searchQuery.trim() && (
+                      <div className="p-3 border-t border-gray-200 bg-gray-50">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleSearch(e);
+                          }}
+                          className="w-full text-left text-sm text-purple-600 font-medium hover:text-purple-700 transition-colors"
+                        >
+                          View all results for "{searchQuery}"
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : searchQuery.trim().length >= 2 ? (
+                  <div className="p-4 text-center text-gray-500">
+                    <p className="text-sm">No products found</p>
+                  </div>
+                ) : null}
+              </div>
+            )}
           </div>
 
           <div className="hidden md:flex">

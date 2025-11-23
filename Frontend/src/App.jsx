@@ -24,6 +24,7 @@ const ProfilePage = lazy(() => import("./pages/Auth/ProfilePage"));
 const CartPage = lazy(() => import("./pages/Cart/CartPage"));
 const BlogPage = lazy(() => import("./pages/Blog"));
 const ContactPage = lazy(() => import("./pages/Contact"));
+const SearchResults = lazy(() => import("./pages/SearchResults"));
 
 const Layout = () => {
   return (
@@ -68,6 +69,7 @@ const App = () => {
         <Route path="cart" element={<CartPage />} />
         <Route path="blog" element={<BlogPage />} />
         <Route path="contact" element={<ContactPage />} />
+        <Route path="search" element={<SearchResults />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     )
