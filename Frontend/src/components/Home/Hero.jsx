@@ -101,7 +101,7 @@ const Hero = () => {
               </Link>
             </div>
             {/* Overlay content on mobile */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-end p-4 rounded-lg">
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-end p-4 rounded-lg">
               <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium mb-2 w-fit">
                 Featured Product
               </span>

@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import ProfileForm from "../../components/forms/ProfileForm";
-import Loading from "../../components/Loading";
 
 const ProfilePage = () => {
   const { user, isAuthenticated, loading, logout } = useAuth();
@@ -14,11 +13,7 @@ const ProfilePage = () => {
     }
   }, [isAuthenticated, loading, navigate]);
 
-  if (loading) {
-    return <Loading message="Loading profile..." fullScreen />;
-  }
-
-  if (!isAuthenticated || !user) {
+  if (loading || !isAuthenticated || !user) {
     return null;
   }
 
