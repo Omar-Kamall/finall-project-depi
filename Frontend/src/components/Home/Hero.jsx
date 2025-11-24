@@ -4,11 +4,9 @@ import { getAllProducts } from '../../api/Products'
 import { useCart } from '../../context/CartContext'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
-import Loading from '../Loading'
 
 const Hero = () => {
   const [product, setProduct] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [imageLoaded, setImageLoaded] = useState(false)
   const { addToCart } = useCart()
   const { isAuthenticated } = useAuth()
@@ -19,17 +17,13 @@ const Hero = () => {
   useEffect(() => {
     const fetchRandomProduct = async () => {
       try {
-        setLoading(true)
         const products = await getAllProducts()
         if (products && products.length > 0) {
-          // Get a random product
           const randomIndex = Math.floor(Math.random() * products.length)
           setProduct(products[randomIndex])
         }
       } catch (error) {
         console.error('Failed to fetch product:', error)
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -39,7 +33,6 @@ const Hero = () => {
   const handleAddToCart = async () => {
     if (!product || adding) return
     
-    // Check if user is authenticated
     if (!isAuthenticated) {
       showError("Please login to add items to cart")
       navigate("/account/login")
@@ -60,62 +53,43 @@ const Hero = () => {
     }
   }
 
-  if (loading) {
-    return (
-      <section className="bg-purple-100 max-w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8 min-h-[60vh] max-h-[80vh] flex items-center">
-        <div className="container mx-auto">
-          <Loading message="Loading featured product..." />
-        </div>
-      </section>
-    )
-  }
-
   if (!product) {
-    return (
-      <section className="bg-purple-100 max-w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8 min-h-[60vh] max-h-[80vh] flex items-center">
-        <div className="container mx-auto">
-          <div className="text-center">
-            <p className="text-gray-600">No product available at the moment.</p>
-          </div>
-        </div>
-      </section>
-    )
+    return null
   }
 
   const rating = product.rating?.rate || 0
   const reviewCount = product.rating?.count || 0
 
   return (
-    <section className="bg-purple-100 max-w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8 min-h-[60vh] max-h-[85vh] overflow-hidden">
-      <div className="container mx-auto h-full">
-        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-center h-full min-h-[50vh] lg:min-h-[60vh]">
-          {/* Mobile: Image as background with overlay text */}
-          <div className="lg:hidden relative w-full h-full min-h-[50vh] rounded-lg overflow-hidden">
-            <div className="absolute inset-0 bg-white rounded-lg shadow-lg">
-              {!imageLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                  <div className="h-12 w-12 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600"></div>
-                </div>
-              )}
-              <Link to={`/product/${product.id}`}>
-                <div className="relative w-full h-full bg-gray-50">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    onLoad={() => setImageLoaded(true)}
-                    className={`h-full w-full object-contain object-center ${
-                      imageLoaded ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  />
-                </div>
-              </Link>
-            </div>
-            {/* Overlay content on mobile */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent flex flex-col justify-end p-4 rounded-lg">
-              <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium mb-2 w-fit">
+    <section className="bg-white py-8 lg:py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center">
+          {/* Mobile: Image with overlay content */}
+          <div className="lg:hidden relative rounded-2xl overflow-hidden shadow-xl">
+            <Link to={`/product/${product.id}`} className="block group">
+              <div className="relative bg-linear-to-br from-gray-50 to-gray-100 aspect-square">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  onLoad={() => setImageLoaded(true)}
+                  className={`h-full w-full object-contain object-center transition-transform duration-500 group-hover:scale-110 ${
+                    imageLoaded ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+                {!imageLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-12 w-12 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600"></div>
+                  </div>
+                )}
+              </div>
+            </Link>
+            
+            {/* Overlay Content */}
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/50 to-transparent flex flex-col justify-end p-6">
+              <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold mb-3 w-fit">
                 Featured Product
               </span>
-              <h1 className="text-xl sm:text-2xl font-extrabold leading-tight text-white mb-2 line-clamp-2">
+              <h1 className="text-2xl font-bold text-white mb-2 line-clamp-2">
                 {product.title}
               </h1>
               <div className="flex items-center gap-2 mb-2">
@@ -126,7 +100,7 @@ const Hero = () => {
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      className={`h-4 w-4 ${
+                      className={`h-3.5 w-3.5 ${
                         i < Math.round(rating) ? 'opacity-100' : 'opacity-30'
                       }`}
                     >
@@ -138,28 +112,28 @@ const Hero = () => {
                   {rating.toFixed(1)} ({reviewCount})
                 </span>
               </div>
-              <div className="flex items-baseline gap-3 mb-3">
-                <span className="text-2xl font-bold text-white">
+              <div className="flex items-baseline gap-2 mb-4">
+                <span className="text-3xl font-bold text-white">
                   ${product.price.toFixed(2)}
                 </span>
               </div>
               <div className="flex gap-2">
                 <Link
                   to={`/product/${product.id}`}
-                  className="flex-1 inline-flex justify-center items-center px-4 py-2 rounded-lg bg-purple-600 text-white text-sm font-semibold shadow-sm hover:bg-purple-700 transition-all duration-200"
+                  className="flex-1 inline-flex justify-center items-center px-4 py-2.5 rounded-xl bg-white/20 backdrop-blur-sm text-white font-semibold hover:bg-white/30 transition-all text-sm"
                 >
                   View Details
                 </Link>
                 <button
                   onClick={handleAddToCart}
                   disabled={adding}
-                  className="flex-1 inline-flex justify-center items-center px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold shadow-sm hover:bg-emerald-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 inline-flex justify-center items-center px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    className="mr-1 h-4 w-4"
+                    className="mr-1.5 h-4 w-4"
                   >
                     <path d="M2.25 3.75h2.386c.7 0 1.311.48 1.468 1.163l.23 1.011m0 0l1.204 5.3A2.25 2.25 0 009.733 12h7.286a2.25 2.25 0 002.192-1.684l1.006-4.019A1.125 1.125 0 0019.131 4.5H6.334m0 0l-.23-1.011A2.25 2.25 0 003.636 2.25H2.25M6 20.25a.75.75 0 100-1.5.75.75 0 000 1.5zm12.75 0a.75.75 0 100-1.5.75.75 0 000 1.5z" />
                   </svg>
@@ -171,18 +145,18 @@ const Hero = () => {
 
           {/* Desktop: Left Section - Product Details */}
           <div className="hidden lg:block">
-            <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium mb-3">
+            <span className="inline-block bg-purple-100 text-purple-700 px-4 py-1.5 rounded-full text-xs font-semibold mb-4">
               Featured Product
             </span>
-            <h1 className="text-3xl lg:text-4xl font-extrabold leading-tight text-purple-900 mb-3 line-clamp-2">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight line-clamp-2">
               {product.title}
             </h1>
-            <p className="text-gray-600 text-base mb-4 line-clamp-2">
+            <p className="text-gray-600 text-lg mb-6 line-clamp-2">
               {product.description || 'Discover this amazing product with exceptional quality and great value.'}
             </p>
 
             {/* Rating */}
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-4">
               <div className="flex text-yellow-400">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <svg
@@ -199,34 +173,35 @@ const Hero = () => {
                 ))}
               </div>
               <span className="text-sm text-gray-600">
-                {rating.toFixed(1)} ({reviewCount} reviews)
+                {rating.toFixed(1)} <span className="text-gray-400">({reviewCount} reviews)</span>
               </span>
             </div>
 
-            {/* Price and Actions */}
-            <div className="flex items-baseline gap-3 mb-4">
-              <span className="text-3xl font-bold text-rose-600">
+            {/* Price */}
+            <div className="flex items-baseline gap-3 mb-6">
+              <span className="text-4xl font-bold text-purple-600">
                 ${product.price.toFixed(2)}
               </span>
             </div>
 
+            {/* Actions */}
             <div className="flex gap-3">
               <Link
                 to={`/product/${product.id}`}
-                className="inline-flex justify-center items-center px-5 py-2.5 rounded-lg bg-purple-600 text-white text-sm font-semibold shadow-sm hover:bg-purple-700 transition-all duration-200 hover:scale-105 active:scale-95"
+                className="inline-flex justify-center items-center px-6 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
               >
                 View Details
               </Link>
               <button
                 onClick={handleAddToCart}
                 disabled={adding}
-                className="inline-flex justify-center items-center px-5 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-semibold shadow-sm hover:bg-emerald-700 transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="inline-flex justify-center items-center px-6 py-3 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-md hover:shadow-lg"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  className="mr-2 h-4 w-4"
+                  className="mr-2 h-5 w-5"
                 >
                   <path d="M2.25 3.75h2.386c.7 0 1.311.48 1.468 1.163l.23 1.011m0 0l1.204 5.3A2.25 2.25 0 009.733 12h7.286a2.25 2.25 0 002.192-1.684l1.006-4.019A1.125 1.125 0 0019.131 4.5H6.334m0 0l-.23-1.011A2.25 2.25 0 003.636 2.25H2.25M6 20.25a.75.75 0 100-1.5.75.75 0 000 1.5zm12.75 0a.75.75 0 100-1.5.75.75 0 000 1.5z" />
                 </svg>
@@ -237,25 +212,25 @@ const Hero = () => {
 
           {/* Desktop: Right Section - Product Image */}
           <div className="hidden lg:block">
-            <div className="relative bg-white rounded-lg shadow-lg p-4 lg:p-6 overflow-hidden">
-              {!imageLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center z-10">
-                  <div className="h-12 w-12 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600"></div>
-                </div>
-              )}
-              <Link to={`/product/${product.id}`}>
-                <div className="relative aspect-square w-full max-w-sm mx-auto bg-gray-50 rounded-lg overflow-hidden">
+            <Link to={`/product/${product.id}`} className="block group">
+              <div className="relative bg-linear-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-xl p-8 lg:p-12">
+                <div className="relative aspect-square w-90 h-90 max-w-md mx-auto">
                   <img
                     src={product.image}
                     alt={product.title}
                     onLoad={() => setImageLoaded(true)}
-                    className={`h-full w-full object-contain object-center transition-transform duration-300 hover:scale-110 ${
+                    className={`h-full w-full object-contain object-center transition-transform duration-500 group-hover:scale-110 ${
                       imageLoaded ? 'opacity-100' : 'opacity-0'
                     }`}
                   />
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="h-12 w-12 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600"></div>
+                    </div>
+                  )}
                 </div>
-              </Link>
-            </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>

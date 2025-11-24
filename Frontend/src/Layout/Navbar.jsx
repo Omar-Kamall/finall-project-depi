@@ -182,18 +182,18 @@ const Navbar = () => {
   return (
     <>
       <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 w-full sticky top-0 left-0 right-0 z-50">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4 gap-4">
+        <div className="container mx-auto flex items-center justify-between px-4 py-4 gap-2 md:gap-4">
           {/* Left Section - Logo */}
-          <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <img src={logo} alt="logo" className="w-9 h-9" />
+          <Link to="/" className="flex items-center gap-2 md:gap-2.5 hover:opacity-80 transition-opacity shrink-0">
+            <img src={logo} alt="logo" className="w-8 h-8 md:w-9 md:h-9" />
             <div className="flex items-baseline">
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900">JinStore</h1>
+              <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900">JinStore</h1>
               <span className="text-xs md:text-sm text-purple-600 ml-1 font-medium">.com</span>
             </div>
           </Link>
 
           {/* Middle Section - Search Bar */}
-          <div className="flex-1 max-w-2xl relative hidden md:block" ref={searchRef}>
+          <div className="flex-1 max-w-2xl relative min-w-0" ref={searchRef}>
             <form onSubmit={handleSearch}>
               <TextField
                 fullWidth
@@ -224,8 +224,11 @@ const Navbar = () => {
                     },
                   },
                   "& .MuiInputBase-input": {
-                    padding: "10px 14px",
+                    padding: "8px 12px",
                     fontSize: "14px",
+                    "@media (min-width: 768px)": {
+                      padding: "10px 14px",
+                    },
                   },
                 }}
                 InputProps={{
@@ -302,86 +305,67 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="hidden md:flex">
-            {/* Right Section - Account, Wishlist, Cart */}
-            <div className="flex items-center gap-4">
-              {/* Account/Sign In */}
-              {isAuthenticated ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowDropdown(!showDropdown)}
-                    className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-                  >
-                    <div className="w-9 h-9 bg-linear-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md">
-                      {user?.username?.charAt(0).toUpperCase() || "U"}
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 hidden lg:block">
-                      {user?.username || "User"}
-                    </span>
-                  </button>
-                  {showDropdown && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
-                      <Link
-                        to="/account/profile"
-                        className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
-                        onClick={() => setShowDropdown(false)}
-                      >
-                        My Profile
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
-                      >
-                        Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
-                  to="/account"
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          {/* Right Section - Account, Wishlist, Cart (Desktop Only) */}
+          <div className="hidden md:flex items-center gap-4 shrink-0">
+            {/* Account/Sign In */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
                 >
-                  <HiOutlineUser className="text-xl text-gray-700" />
-                </Link>
-              )}
-
-              {/* Wishlist */}
+                  <div className="w-9 h-9 bg-linear-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md">
+                    {user?.username?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 hidden lg:block">
+                    {user?.username || "User"}
+                  </span>
+                </button>
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
+                    <Link
+                      to="/account/profile"
+                      className="block px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                      onClick={() => setShowDropdown(false)}
+                    >
+                      My Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
               <Link
-                to="/wishlist"
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                to="/account"
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <Badge badgeContent={0} color="error">
-                  <HiOutlineHeart className="text-xl text-gray-700" />
-                </Badge>
+                <HiOutlineUser className="text-xl text-gray-700" />
               </Link>
+            )}
 
-              {/* Shopping Cart */}
-              <Link
-                to="/cart"
-                className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <Badge badgeContent={getTotalItems()} color="error">
-                  <HiOutlineShoppingCart className="text-xl text-gray-700" />
-                </Badge>
-              </Link>
-            </div>
-          </div>
+            {/* Wishlist */}
+            <Link
+              to="/wishlist"
+              className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <Badge badgeContent={0} color="error">
+                <HiOutlineHeart className="text-xl text-gray-700" />
+              </Badge>
+            </Link>
 
-          {/* Mobile Right Icons */}
-          <div className="flex md:hidden items-center gap-3">
+            {/* Shopping Cart */}
             <Link
               to="/cart"
               className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <div className="relative">
+              <Badge badgeContent={getTotalItems()} color="error">
                 <HiOutlineShoppingCart className="text-xl text-gray-700" />
-                {getTotalItems() > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                    {getTotalItems()}
-                  </span>
-                )}
-              </div>
+              </Badge>
             </Link>
           </div>
         </div>
