@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 // Configure CORS
 app.use(cors({
-  origin: "http://localhost:3000", // Frontend Link
+  origin: "http://localhost:5173", // Frontend Link
   credentials: true, // Send Tokens with Frontend
 }));
 

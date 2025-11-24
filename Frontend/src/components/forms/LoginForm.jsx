@@ -38,7 +38,7 @@ const LoginForm = () => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ isSubmitting, values }) => (
+      {({ isSubmitting }) => (
         <Form className="space-y-6">
           {error && (
             <div className="rounded-md bg-red-50 p-4 text-sm text-red-800">
