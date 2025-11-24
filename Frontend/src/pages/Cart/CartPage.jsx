@@ -238,6 +238,7 @@ const CartPage = () => {
 
                 <button
                   type="button"
+                  onClick={() => navigate("/checkout")}
                   className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-md transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   Proceed to Checkout
