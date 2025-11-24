@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
 const Card = ({
@@ -15,7 +16,9 @@ const Card = ({
   id,
 }) => {
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const { success, error: showError } = useToast();
+  const navigate = useNavigate();
   const [adding, setAdding] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const hasDiscount =
@@ -26,6 +29,13 @@ const Card = ({
     e.preventDefault();
     e.stopPropagation();
     if (!id || !inStock) return;
+    
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      showError("Please login to add items to cart");
+      navigate("/account/login");
+      return;
+    }
     
     setAdding(true);
     try {
@@ -42,7 +52,7 @@ const Card = ({
     <article className="group relative bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       {/* Discount badge */}
       {hasDiscount && (
-        <span className="absolute left-3 top-3 z-10 rounded-full bg-gradient-to-r from-rose-500 to-rose-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
+        <span className="absolute left-3 top-3 z-10 rounded-full bg-linear-to-r from-rose-500 to-rose-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
           -{discountPercent}%
         </span>
       )}
@@ -64,7 +74,7 @@ const Card = ({
       </button>
 
       {/* Image */}
-      <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100">
         {imageSrc ? (
           <Link to={id ? `/product/${id}` : "#"}>
             {!imageLoaded && (
@@ -91,7 +101,7 @@ const Card = ({
       {/* Content */}
       <div className="p-4 space-y-3">
         {/* Title */}
-        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 min-h-[2.5rem]">
+        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 min-h-10">
           {id ? (
             <Link to={`/product/${id}`} className="hover:text-purple-600 transition-colors">
               {title || "Product name goes here"}
@@ -141,7 +151,7 @@ const Card = ({
             type="button"
             onClick={handleAddToCart}
             disabled={!inStock || adding}
-            className="flex-1 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="flex-1 inline-flex items-center justify-center rounded-xl bg-linear-to-r from-emerald-600 to-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { getAllProducts } from '../../api/Products'
 import { useCart } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import Loading from '../Loading'
 
@@ -10,7 +11,9 @@ const Hero = () => {
   const [loading, setLoading] = useState(true)
   const [imageLoaded, setImageLoaded] = useState(false)
   const { addToCart } = useCart()
+  const { isAuthenticated } = useAuth()
   const { success, error: showError } = useToast()
+  const navigate = useNavigate()
   const [adding, setAdding] = useState(false)
 
   useEffect(() => {
@@ -35,6 +38,13 @@ const Hero = () => {
 
   const handleAddToCart = async () => {
     if (!product || adding) return
+    
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      showError("Please login to add items to cart")
+      navigate("/account/login")
+      return
+    }
     
     setAdding(true)
     try {

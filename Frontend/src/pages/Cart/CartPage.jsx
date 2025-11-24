@@ -1,17 +1,32 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
-import Loading from "../../components/Loading";
+import EmptyCart from "../../Imgs/EmptyCart.svg";
 
 const CartPage = () => {
   const {
     cartItems,
-    loading,
     removeFromCart,
     updateQuantity,
     getTotalPrice,
   } = useCart();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const { success } = useToast();
+  const navigate = useNavigate();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      navigate("/account/login");
+    }
+  }, [isAuthenticated, authLoading, navigate]);
+
+  // Don't render anything while checking auth or if not authenticated
+  if (authLoading || !isAuthenticated) {
+    return null;
+  }
 
   const handleRemove = async (productId, productTitle) => {
     await removeFromCart(productId);
@@ -24,10 +39,6 @@ const CartPage = () => {
       success(`${productTitle} removed from cart`);
     }
   };
-
-  if (loading) {
-    return <Loading message="Loading cart..." fullScreen />;
-  }
 
   return (
     <section className="min-h-screen bg-gray-50 py-8">
@@ -67,7 +78,8 @@ const CartPage = () => {
         {/* Empty Cart State */}
         {cartItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="bg-white border border-gray-200 rounded-lg p-12 text-center max-w-md w-full">
+            <div className="rounded-lg p-12 text-center">
+              <img src={EmptyCart} alt="Empty Cart" className="w-16 h-16 mx-auto mb-6" />
               <h2 className="text-2xl font-bold text-red-600 mb-6 uppercase">
                 YOUR CART IS CURRENTLY EMPTY.
               </h2>

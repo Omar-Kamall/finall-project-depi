@@ -1,33 +1,16 @@
 import { Link } from "react-router-dom";
+import NotFound from "../../Imgs/404.png";
 
 const Notfound = () => {
   return (
     <section className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full text-center">
         {/* 404 Number */}
+        <img src={NotFound} alt="404" className="w-full h-full mx-auto mb-6" />
         <div className="mb-8">
           <h1 className="text-9xl sm:text-[12rem] font-extrabold text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-purple-400">
             404
           </h1>
-        </div>
-
-        {/* Error Icon */}
-        <div className="mb-6 flex justify-center">
-          <div className="relative">
-            <svg
-              className="h-24 w-24 text-purple-600"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
         </div>
 
         {/* Error Message */}

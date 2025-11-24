@@ -4,12 +4,14 @@ import { getProductById, getProductsByCategory } from "../../api/Products";
 import Loading from "../../components/Loading";
 import Card from "../../components/Card";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const { success, error: showError } = useToast();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -184,6 +186,11 @@ const ProductDetails = () => {
                 <button 
                   type="button" 
                   onClick={async () => {
+                    if (!isAuthenticated) {
+                      showError("Please login to add items to cart");
+                      navigate("/account/login");
+                      return;
+                    }
                     setAdding(true);
                     try {
                       await addToCart(product, qty);
@@ -202,6 +209,11 @@ const ProductDetails = () => {
                 <button 
                   type="button" 
                   onClick={async () => {
+                    if (!isAuthenticated) {
+                      showError("Please login to add items to cart");
+                      navigate("/account/login");
+                      return;
+                    }
                     setAdding(true);
                     try {
                       await addToCart(product, qty);
