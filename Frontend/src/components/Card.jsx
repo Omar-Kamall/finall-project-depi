@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
 const Card = ({
@@ -15,7 +16,9 @@ const Card = ({
   id,
 }) => {
   const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const { success, error: showError } = useToast();
+  const navigate = useNavigate();
   const [adding, setAdding] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const hasDiscount =
@@ -26,6 +29,13 @@ const Card = ({
     e.preventDefault();
     e.stopPropagation();
     if (!id || !inStock) return;
+    
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      showError("Please login to add items to cart");
+      navigate("/account/login");
+      return;
+    }
     
     setAdding(true);
     try {
@@ -39,11 +49,11 @@ const Card = ({
   };
 
   return (
-    <article className="group relative border border-gray-200 bg-white p-3 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-purple-200 hover:-translate-y-1">
+    <article className="group relative bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       {/* Discount badge */}
       {hasDiscount && (
-        <span className="absolute left-3 top-3 z-10 rounded-full bg-rose-600 px-2 py-1 text-xs font-semibold text-white">
-          {discountPercent}%
+        <span className="absolute left-3 top-3 z-10 rounded-full bg-linear-to-r from-rose-500 to-rose-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
+          -{discountPercent}%
         </span>
       )}
 
@@ -51,7 +61,7 @@ const Card = ({
       <button
         type="button"
         aria-label="Add to wishlist"
-        className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-gray-600 shadow ring-1 ring-gray-200 transition hover:text-rose-600"
+        className="absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm text-gray-600 shadow-lg transition-all hover:text-rose-600 hover:scale-110"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +74,7 @@ const Card = ({
       </button>
 
       {/* Image */}
-      <div className="relative aspect-4/3 w-full overflow-hidden rounded-lg bg-gray-50">
+      <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100">
         {imageSrc ? (
           <Link to={id ? `/product/${id}` : "#"}>
             {!imageLoaded && (
@@ -89,11 +99,11 @@ const Card = ({
       </div>
 
       {/* Content */}
-      <div className="mt-3 space-y-2">
+      <div className="p-4 space-y-3">
         {/* Title */}
-        <h3 className="truncate text-sm font-medium text-gray-900">
+        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 min-h-10">
           {id ? (
-            <Link to={`/product/${id}`} className="hover:text-purple-600 transition-colors duration-200">
+            <Link to={`/product/${id}`} className="hover:text-purple-600 transition-colors">
               {title || "Product name goes here"}
             </Link>
           ) : (
@@ -124,8 +134,8 @@ const Card = ({
         </div>
 
         {/* Pricing */}
-        <div className="flex items-baseline gap-3">
-          <span className="text-lg font-bold text-rose-600">
+        <div className="flex items-baseline gap-2">
+          <span className="text-xl font-bold text-purple-600">
             {typeof price === "number" ? `$${price.toFixed(2)}` : "$0.00"}
           </span>
           {hasOldPrice && (
@@ -136,12 +146,12 @@ const Card = ({
         </div>
 
         {/* Actions */}
-        <div className="mt-3 flex items-center justify-between">
+        <div className="flex items-center justify-between pt-2">
           <button
             type="button"
             onClick={handleAddToCart}
             disabled={!inStock || adding}
-            className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="flex-1 inline-flex items-center justify-center rounded-xl bg-linear-to-r from-emerald-600 to-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -153,14 +163,6 @@ const Card = ({
             </svg>
             {adding ? "Adding..." : "Add to cart"}
           </button>
-
-          <span
-            className={`text-xs font-semibold ${
-              inStock ? "text-emerald-600" : "text-rose-600"
-            }`}
-          >
-            {inStock ? "IN STOCK" : "OUT OF STOCK"}
-          </span>
         </div>
       </div>
     </article>

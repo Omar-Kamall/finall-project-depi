@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import Loading from "../../components/Loading";
 
 const AccountPage = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -17,7 +16,7 @@ const AccountPage = () => {
     }
   }, [isAuthenticated, loading, navigate]);
 
-  return <Loading message="Redirecting..." fullScreen />;
+  return null;
 };
 
 export default AccountPage;
