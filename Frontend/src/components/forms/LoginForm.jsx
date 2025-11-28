@@ -1,26 +1,36 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
+import { login } from "../../api/auth";
+import { useUser } from "../../context/UserContext";
 
 const validationSchema = Yup.object({
-  username: Yup.string().required("Username or email is required"),
+  email: Yup.string().required("Email is required"),
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
 });
 
 const LoginForm = () => {
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  // Custom Hook Save User Login
+  const { setUser } = useUser();
   const [error, setError] = useState("");
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       setError("");
-      await login(values);
-      navigate("/");
+      const res = await login({
+        email: values.email,
+        password: values.password,
+      });
+
+      // Save User In Context UserContext
+      setUser(res.user);
+      localStorage.setItem("user" , JSON.stringify(res.user));
+      localStorage.setItem("token" , res.token);
+
+      window.location.href = "/";
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
     } finally {
@@ -31,7 +41,7 @@ const LoginForm = () => {
   return (
     <Formik
       initialValues={{
-        username: "",
+        email: "",
         password: "",
         rememberMe: false,
       }}
@@ -48,20 +58,20 @@ const LoginForm = () => {
 
           <div>
             <label
-              htmlFor="username"
+              htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Username or email address <span className="text-red-500">*</span>
+              Email address <span className="text-red-500">*</span>
             </label>
             <Field
               type="text"
-              id="username"
-              name="username"
+              id="email"
+              name="email"
               className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-              placeholder="Enter your username or email"
+              placeholder="Enter your email"
             />
             <ErrorMessage
-              name="username"
+              name="email"
               component="div"
               className="mt-1 text-sm text-red-600"
             />
@@ -114,9 +124,9 @@ const LoginForm = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            {isSubmitting ? "Logging in..." : "Log in"}
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </Form>
       )}
@@ -125,4 +135,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-

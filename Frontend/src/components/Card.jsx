@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
-import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
 const Card = ({
@@ -9,37 +8,42 @@ const Card = ({
   title,
   price,
   oldPrice,
-  discountPercent,
-  rating,
   reviewCount,
   inStock = true,
-  id,
+  productId,
 }) => {
   const { addToCart } = useCart();
-  const { isAuthenticated } = useAuth();
+  const isAuthenticated = localStorage.getItem("token");
   const { success, error: showError } = useToast();
   const navigate = useNavigate();
   const [adding, setAdding] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const hasDiscount =
-    typeof discountPercent === "number" && discountPercent > 0;
-  const hasOldPrice = typeof oldPrice === "number" && oldPrice > price;
+  const discount = ((oldPrice - price) / oldPrice) * 100 || 0;
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!id || !inStock) return;
-    
+    if (!productId || !inStock) return;
+
     // Check if user is authenticated
     if (!isAuthenticated) {
       showError("Please login to add items to cart");
       navigate("/account/login");
       return;
     }
-    
+
     setAdding(true);
+
+    const productData = {
+      productId,
+      price: price,
+      title: title,
+      image: imageSrc,
+      quantity: 1,
+    };
+
     try {
-      await addToCart({ id, price, title, image: imageSrc }, 1);
+      await addToCart(productData);
       success(`${title} added to cart!`);
     } catch {
       showError("Failed to add item to cart. Please try again.");
@@ -49,11 +53,11 @@ const Card = ({
   };
 
   return (
-    <article className="group relative bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <article className="group relative bg-white rounded-2xl overflow-_hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       {/* Discount badge */}
-      {hasDiscount && (
+      {oldPrice && (
         <span className="absolute left-3 top-3 z-10 rounded-full bg-linear-to-r from-rose-500 to-rose-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
-          -{discountPercent}%
+          {discount.toFixed(0)}%
         </span>
       )}
 
@@ -74,9 +78,9 @@ const Card = ({
       </button>
 
       {/* Image */}
-      <div className="relative aspect-square w-full overflow-hidden bg-linear-to-br from-gray-50 to-gray-100">
+      <div className="relative aspect-square w-full overflow-_hidden bg-linear-to-br from-gray-50 to-gray-100">
         {imageSrc ? (
-          <Link to={id ? `/product/${id}` : "#"}>
+          <Link to={productId ? `/product/${productId}` : "#"}>
             {!imageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="h-8 w-8 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600"></div>
@@ -102,8 +106,11 @@ const Card = ({
       <div className="p-4 space-y-3">
         {/* Title */}
         <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 min-h-10">
-          {id ? (
-            <Link to={`/product/${id}`} className="hover:text-purple-600 transition-colors">
+          {productId ? (
+            <Link
+              to={`/product/${productId}`}
+              className="hover:text-purple-600 transition-colors"
+            >
               {title || "Product name goes here"}
             </Link>
           ) : (
@@ -113,23 +120,8 @@ const Card = ({
 
         {/* Rating */}
         <div className="flex items-center gap-2">
-          <div className="flex text-yellow-400">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <svg
-                key={i}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className={`h-4 w-4 ${
-                  i < Math.round(rating || 0) ? "opacity-100" : "opacity-30"
-                }`}
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            ))}
-          </div>
           {typeof reviewCount === "number" && (
-            <span className="text-xs text-gray-500">{reviewCount}</span>
+            <span className="text-xs text-gray-500">Quantity ({reviewCount})</span>
           )}
         </div>
 
@@ -138,7 +130,7 @@ const Card = ({
           <span className="text-xl font-bold text-purple-600">
             {typeof price === "number" ? `$${price.toFixed(2)}` : "$0.00"}
           </span>
-          {hasOldPrice && (
+          {oldPrice && (
             <span className="text-sm text-gray-400 line-through">
               ${oldPrice?.toFixed ? oldPrice.toFixed(2) : oldPrice}
             </span>

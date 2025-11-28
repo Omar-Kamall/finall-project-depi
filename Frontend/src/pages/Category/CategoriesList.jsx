@@ -18,14 +18,16 @@ const CategoriesList = () => {
         setError("");
 
         // Fetch all categories
-        const categoriesData = await getCategories();
+        const res = await getCategories();
+        const categoriesData = res.data;
 
         // Fetch product counts for each category
         const counts = {};
         await Promise.all(
           categoriesData.map(async (category) => {
             try {
-              const products = await getProductsByCategory(category);
+              const response = await getProductsByCategory(category)
+              const products = response.data;
               counts[category] = products.length;
             } catch {
               counts[category] = 0;
@@ -143,7 +145,7 @@ const CategoriesList = () => {
             {categories.map((category) => (
               <Link
                 key={category}
-                to={`/category/${encodeURIComponent(category)}`}
+                to={`/category/${category}`}
                 className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-lg hover:border-purple-300"
               >
                 {/* Category Icon/Decoration */}

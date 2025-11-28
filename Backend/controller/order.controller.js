@@ -1,5 +1,6 @@
 const orderModel = require("../model/order.model");
 const productModel = require("../model/product.model");
+const userModel = require("../model/user.model");
 const transporter = require("../service/mailer.service");
 
 exports.getOrder = async (req, res) => {
@@ -26,9 +27,10 @@ exports.postOrder = async (req, res) => {
   try {
     // get user id with jwt middleware
     const userId = req.user?._id;
-    const { fname, lname, email, address, phone, products } = req.body;
+    const { fname, lname, email, address, phone, country, city, products } = req.body;
+    const { street, apartment } = address || {};
 
-    if (!fname || !lname || !email || !address || !phone)
+    if (!fname || !lname || !email || !phone || !street || !apartment)
       return res
         .status(400)
         .json({ message: "All user info fields are required" });
@@ -43,10 +45,19 @@ exports.postOrder = async (req, res) => {
 
     let orderProducts = [];
     let grandTotal = 0;
+    const sellerEmails = [];
 
     // loop in products
     for (const item of products) {
       const product = await productModel.findById(item.productId);
+
+      const sellerId = product.createdBy;
+      const sellerUser = await userModel.findById(sellerId);
+      if (sellerUser && sellerUser.email) {
+        sellerEmails.push(sellerUser.email);
+      }
+
+
 
       if (!product)
         return res.status(400).json({ message: `Product not found` });
@@ -76,8 +87,13 @@ exports.postOrder = async (req, res) => {
     const newOrder = new orderModel({
       fname,
       lname,
+      country,
+      city,
       email,
-      address,
+      address: {
+        street,
+        apartment
+      },
       phone,
       products: orderProducts,
       totalPrice: grandTotal,
@@ -107,7 +123,7 @@ exports.postOrder = async (req, res) => {
   <p><strong>Name:</strong> ${fname} ${lname}</p>
   <p><strong>Email:</strong> ${email}</p>
   <p><strong>Phone:</strong> ${phone}</p>
-  <p><strong>Address:</strong> ${address}</p>
+  <p><strong>Address:</strong> ${street}, ${apartment}</p>
   <h3>Order Details:</h3>
   <table border="1" cellpadding="5" cellspacing="0">
     <thead>
@@ -128,7 +144,7 @@ exports.postOrder = async (req, res) => {
   <h3>Grand Total: $${grandTotal}</h3>
 `;
 
-    // Send Order To Email Admin || Saller
+    // Send Order To Email Admin
     await transporter.sendMail({
       from: `My Website <omarkamall.dev@gmail.com>`,
       replyTo: `${fname} ${lname} <${email}>`,
@@ -137,7 +153,7 @@ exports.postOrder = async (req, res) => {
       html: htmlMessage,
     });
 
-    // Send customer confirmation email
+    // Send customer Order
     await transporter.sendMail({
       from: `My Website <omarkamall.dev@gmail.com>`,
       to: email,
@@ -148,6 +164,20 @@ exports.postOrder = async (req, res) => {
     ${htmlMessage}
   `,
     });
+
+    // Send Order To Email Saller
+    await Promise.all(
+      sellerEmails.map(async (item) => {
+        await transporter.sendMail({
+          from: `My Website <omarkamall.dev@gmail.com>`,
+          to: item,
+          subject: "New Order Notification",
+          html: `
+      <p>Your order has been received successfully. Here are your details:</p>
+      ${htmlMessage}
+    `,
+        })
+      }))
 
     return res
       .status(201)

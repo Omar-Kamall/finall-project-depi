@@ -1,9 +1,9 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { register } from "../../api/auth";
 
 const validationSchema = Yup.object({
   username: Yup.string()
@@ -15,11 +15,10 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
-  role: Yup.string().oneOf(["customer", "vendor"], "Invalid role").required("Please select a role"),
+  role: Yup.string().oneOf(["user", "saller"], "Invalid role").required("Please select a role"),
 });
 
 const RegisterForm = () => {
-  const { register } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -27,12 +26,15 @@ const RegisterForm = () => {
     try {
       setError("");
       await register({
-        username: values.username,
+        name: values.username,
         email: values.email,
         password: values.password,
+        city: "",
+        phone: "",
+        address: "",
         role: values.role,
       });
-      navigate("/");
+      navigate("/account/login");
     } catch (err) {
       setError(err.message || "Registration failed. Please try again.");
     } finally {
@@ -46,7 +48,7 @@ const RegisterForm = () => {
         username: "",
         email: "",
         password: "",
-        role: "customer",
+        role: "user",
       }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
@@ -132,7 +134,7 @@ const RegisterForm = () => {
                   type="radio"
                   id="customer"
                   name="role"
-                  value="customer"
+                  value="user"
                   className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300"
                 />
                 <label
@@ -147,7 +149,7 @@ const RegisterForm = () => {
                   type="radio"
                   id="vendor"
                   name="role"
-                  value="vendor"
+                  value="saller"
                   className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300"
                 />
                 <label
@@ -181,7 +183,7 @@ const RegisterForm = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSubmitting ? "Registering..." : "Register"}
           </button>

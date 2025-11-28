@@ -26,10 +26,12 @@ const SearchResults = () => {
         let allProducts = [];
         if (category) {
           // Search within specific category
-          allProducts = await getProductsByCategory(category);
+          const res = await getProductsByCategory(category)
+          allProducts = res.data;
         } else {
           // Search all products
-          allProducts = await getAllProducts();
+          const res= await getAllProducts();
+          allProducts = res.data;
         }
 
         if (isMounted) {
@@ -202,13 +204,12 @@ const SearchResults = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
               <Card
-                key={product.id}
-                id={product.id}
+                key={product._id}
+                id={product._id}
                 imageSrc={product.image}
                 title={product.title}
                 price={product.price}
-                rating={product.rating?.rate}
-                reviewCount={product.rating?.count}
+                reviewCount={product.count}
               />
             ))}
           </div>

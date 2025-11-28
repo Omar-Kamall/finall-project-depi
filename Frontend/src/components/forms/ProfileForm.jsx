@@ -1,7 +1,8 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
+import { updateProfile } from "../../api/auth";
+import { useUser } from "../../context/UserContext";
 
 const validationSchema = Yup.object({
   username: Yup.string()
@@ -10,17 +11,21 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  firstName: Yup.string(),
-  lastName: Yup.string(),
   phone: Yup.string(),
   city: Yup.string(),
   street: Yup.string(),
 });
 
 const ProfileForm = ({ user, onSuccess }) => {
-  const { updateProfile } = useAuth();
+  const { setUser } = useUser();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const roleLabel = {
+  saller: "Vendor",
+  admin: "Admin",
+  user: "Customer",
+};
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
@@ -28,26 +33,16 @@ const ProfileForm = ({ user, onSuccess }) => {
       setSuccess("");
       
       const updatedData = {
-        username: values.username,
+        name: values.username,
         email: values.email,
-        name: {
-          firstname: values.firstName || user?.name?.firstname || "",
-          lastname: values.lastName || user?.name?.lastname || "",
-        },
-        phone: values.phone || user?.phone || "",
-        address: {
-          city: values.city || user?.address?.city || "",
-          street: values.street || user?.address?.street || "",
-          number: user?.address?.number || 0,
-          zipcode: user?.address?.zipcode || "",
-          geolocation: user?.address?.geolocation || {
-            lat: "",
-            long: "",
-          },
-        },
+        city: values.city || "",
+        phone: values.phone || "",
+        address: values.address || "",
       };
 
       await updateProfile(updatedData);
+      setUser(updatedData);
+      localStorage.setItem("user" , JSON.stringify(updatedData));
       setSuccess("Profile updated successfully!");
       if (onSuccess) onSuccess();
     } catch (err) {
@@ -58,13 +53,11 @@ const ProfileForm = ({ user, onSuccess }) => {
   };
 
   const initialValues = {
-    username: user?.username || "",
+    username: user?.name || "",
     email: user?.email || "",
-    firstName: user?.name?.firstname || "",
-    lastName: user?.name?.lastname || "",
     phone: user?.phone || "",
-    city: user?.address?.city || "",
-    street: user?.address?.street || "",
+    city: user?.city || "",
+    address: user?.address || "",
   };
 
   return (
@@ -120,42 +113,13 @@ const ProfileForm = ({ user, onSuccess }) => {
                 type="email"
                 id="email"
                 name="email"
-                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                readOnly
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               />
               <ErrorMessage
                 name="email"
                 component="div"
                 className="mt-1 text-sm text-red-600"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="firstName"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                First Name
-              </label>
-              <Field
-                type="text"
-                id="firstName"
-                name="firstName"
-                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="lastName"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Last Name
-              </label>
-              <Field
-                type="text"
-                id="lastName"
-                name="lastName"
-                className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               />
             </div>
 
@@ -191,15 +155,15 @@ const ProfileForm = ({ user, onSuccess }) => {
 
             <div className="md:col-span-2">
               <label
-                htmlFor="street"
+                htmlFor="address"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Street Address
               </label>
               <Field
                 type="text"
-                id="street"
-                name="street"
+                id="address"
+                name="address"
                 className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               />
             </div>
@@ -210,14 +174,14 @@ const ProfileForm = ({ user, onSuccess }) => {
               Account Type
             </label>
             <div className="px-4 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-700">
-              {user?.role === "vendor" ? "Vendor" : "Customer"}
+              {roleLabel[user?.role] || "User"}
             </div>
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSubmitting ? "Updating..." : "Update Profile"}
           </button>

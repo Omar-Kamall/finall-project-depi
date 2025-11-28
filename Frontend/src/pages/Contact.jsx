@@ -1,9 +1,34 @@
-import { useForm, ValidationError } from "@formspree/react";
+import { useState } from "react";
+import { contact } from "../api/contact";
 
 const Contact = () => {
-  const [state, handleSubmit] = useForm("xeodyjej");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+    stateForm: false,
+    loading: false,
+    error: "",
+  });
 
-  if (state.succeeded) {
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      setFormData((prev) => ({ ...prev, loading: true }));
+      await contact({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      });
+    } catch (err) {
+      setFormData((prev) => ({ ...prev, error: err }));
+    } finally {
+      setFormData((prev) => ({ ...prev, loading: false }));
+      setFormData((prev) => ({ ...prev, stateForm: true }));
+    }
+  };
+
+  if (formData.stateForm) {
     return (
       <main className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
@@ -99,14 +124,14 @@ const Contact = () => {
                       id="name"
                       name="name"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
                       placeholder="Your name"
                       required
-                    />
-                    <ValidationError
-                      prefix="Name"
-                      field="name"
-                      errors={state.errors}
-                      className="text-red-600 text-sm mt-1"
                     />
                   </div>
                   <div>
@@ -121,14 +146,14 @@ const Contact = () => {
                       id="email"
                       name="email"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
                       placeholder="your.email@example.com"
                       required
-                    />
-                    <ValidationError
-                      prefix="Email"
-                      field="email"
-                      errors={state.errors}
-                      className="text-red-600 text-sm mt-1"
                     />
                   </div>
                   <div>
@@ -143,17 +168,17 @@ const Contact = () => {
                       name="message"
                       rows="4"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          message: e.target.value,
+                        }))
+                      }
                       placeholder="Your message..."
                       required
                     ></textarea>
-                    <ValidationError
-                      prefix="Message"
-                      field="message"
-                      errors={state.errors}
-                      className="text-red-600 text-sm mt-1"
-                    />
                   </div>
-                  {state.errors && state.errors.length > 0 && (
+                  {formData.error && formData.error.length > 0 && (
                     <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
                       <p className="text-sm text-red-600">
                         Please fix the errors above and try again.
@@ -162,10 +187,10 @@ const Contact = () => {
                   )}
                   <button
                     type="submit"
-                    disabled={state.submitting}
-                    className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={formData.loading}
+                    className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    {state.submitting ? "Sending..." : "Send Message"}
+                    {formData.loading ? "Sending..." : "Send Message"}
                   </button>
                 </form>
               </div>
@@ -178,4 +203,3 @@ const Contact = () => {
 };
 
 export default Contact;
-

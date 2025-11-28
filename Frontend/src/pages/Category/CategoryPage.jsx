@@ -23,7 +23,8 @@ const CategoryPage = () => {
         setError("");
 
         // First, verify the category exists
-        const categories = await getCategories();
+        const response = await getCategories();
+        const categories = response.data;
         const decodedCategoryName = decodeURIComponent(categoryName || "");
         const categoryExists = categories.some(
           (cat) => cat.toLowerCase() === decodedCategoryName.toLowerCase()
@@ -38,7 +39,8 @@ const CategoryPage = () => {
         }
 
         // Fetch products for the category
-        const categoryProducts = await getProductsByCategory(decodedCategoryName);
+        const res = await getProductsByCategory(decodedCategoryName);
+        const categoryProducts = res.data;
 
         if (isMounted) {
           setProducts(categoryProducts);
@@ -292,13 +294,13 @@ const CategoryPage = () => {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
               {displayedProducts.map((product) => (
                 <Card
-                  key={product.id}
-                  id={product.id}
+                  key={product._id}
+                  id={product._id}
                   imageSrc={product.image}
                   title={product.title}
                   price={product.price}
-                  rating={product.rating?.rate}
-                  reviewCount={product.rating?.count}
+                  oldPrice={product.oldPrice}
+                  reviewCount={product.count}
                   inStock={true}
                 />
               ))}

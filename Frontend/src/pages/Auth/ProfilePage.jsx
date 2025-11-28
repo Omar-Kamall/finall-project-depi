@@ -1,24 +1,34 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
 import ProfileForm from "../../components/forms/ProfileForm";
+import { logout } from "../../api/auth";
+import { useUser } from "../../context/UserContext";
 
 const ProfilePage = () => {
-  const { user, isAuthenticated, loading, logout } = useAuth();
+  const { user , setUser} = useUser();
+  const isAuthenticated = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  const roleLabel = {
+  saller: "Vendor",
+  admin: "Admin",
+  user: "Customer",
+};
+
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    if (!isAuthenticated) {
       navigate("/account/login");
     }
-  }, [isAuthenticated, loading, navigate]);
+  }, [isAuthenticated, navigate]);
 
-  if (loading || !isAuthenticated || !user) {
+  if (!isAuthenticated) {
     return null;
   }
 
   const handleLogout = () => {
     logout();
+    setUser(null);
     navigate("/account/login");
   };
 
@@ -74,15 +84,15 @@ const ProfilePage = () => {
           <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-md">
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                {user.username?.charAt(0).toUpperCase() || "U"}
+                {user.name?.charAt(0).toUpperCase() || "U"}
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">
-                  {user.username || "User"}
+                  {user?.name || "User"}
                 </h2>
-                <p className="text-gray-600">{user.email}</p>
+                {/* <p className="text-gray-600">{user.email}</p> */}
                 <span className="inline-block mt-1 px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded-full">
-                  {user.role === "vendor" ? "Vendor" : "Customer"}
+                  {roleLabel[user?.role] || "User"}
                 </span>
               </div>
             </div>

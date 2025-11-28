@@ -2,9 +2,9 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  getProductsSortedByRating,
   getCategories,
   getProductsByCategory,
+  getAllProducts,
 } from "../../api/Products";
 import Card from "../Card";
 import Loading from "../Loading";
@@ -18,18 +18,23 @@ const Products = () => {
 
   useEffect(() => {
     let isMounted = true;
+
     (async () => {
       try {
-        // Fetch top rated products
-        const topRatedData = await getProductsSortedByRating("desc", 4);
+        // Top Rated
+        const resData = await getAllProducts();
+        const topRatedData = resData.data; // ❗ كان resData.data
 
-        // Fetch categories
-        const categoriesData = await getCategories();
+        // Categories
+        const response = await getCategories();
+        const categoriesData = response.data; // ❗ كان response.data
 
-        // Fetch products for each category
+        // Products by Category
         const categoryProducts = {};
+
         for (const category of categoriesData) {
-          const products = await getProductsByCategory(category);
+          const res = await getProductsByCategory(category);
+          const products = res.data;
           categoryProducts[category] = products;
         }
 
@@ -44,6 +49,7 @@ const Products = () => {
         if (isMounted) setLoading(false);
       }
     })();
+
     return () => {
       isMounted = false;
     };
@@ -69,15 +75,13 @@ const Products = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12 gap-6">
         {topRated.map((p) => (
           <Card
-            key={p.id}
-            id={p.id}
+            key={p._id}
+            productId={p._id}
             imageSrc={p.image}
             title={p.title}
-            oldPrice={p.price}
-            price={((100 - p.id) / 100) * p.price}
-            rating={p.rating?.rate}
-            reviewCount={p.rating?.count}
-            discountPercent={p.id}
+            price={p.price}
+            oldPrice={p.oldPrice}
+            reviewCount={p.count}
           />
         ))}
       </div>
@@ -88,7 +92,7 @@ const Products = () => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-bold text-2xl capitalize">{category}:</h2>
             <Link
-              to={`/category/${encodeURIComponent(category)}`}
+              to={`/category/${category}`}
               className="text-sm font-medium text-purple-600 hover:text-purple-700 transition flex items-center gap-1"
             >
               View All
@@ -108,19 +112,16 @@ const Products = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {productsByCategory[category]
-              ?.map((p) => (
-                <Card
-                  key={p.id}
-                  id={p.id}
-                  imageSrc={p.image}
-                  title={p.title}
-                  price={p.price}
-                  rating={p.rating?.rate}
-                  reviewCount={p.rating?.count}
-                />
-              ))
-              .slice(0, 4)}
+            {productsByCategory[category]?.slice(0, 4).map((p) => (
+              <Card
+                key={p._id}
+                productId={p._id}
+                imageSrc={p.image}
+                title={p.title}
+                price={p.price}
+                reviewCount={p.count}
+              />
+            ))}
           </div>
         </div>
       ))}

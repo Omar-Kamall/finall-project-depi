@@ -9,13 +9,20 @@ import {
   HiOutlineShoppingCart,
   HiChevronDown,
 } from "react-icons/hi";
-import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { getCategories, getAllProducts, getProductsByCategory } from "../api/Products";
+import {
+  getCategories,
+  getAllProducts,
+  getProductsByCategory,
+} from "../api/Products";
+import { logout } from "../api/auth";
+import { useUser } from "../context/UserContext";
 
 const Navbar = () => {
-  const { user, isAuthenticated, logout } = useAuth();
-  const { getTotalItems } = useCart();
+  const { user, setUser } = useUser();
+  const isAuthenticated = localStorage.getItem("token");
+  const { cartItems } = useCart();
+  const lengthCartItems = cartItems.length;
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -37,8 +44,9 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
+    setUser(null);
     setShowDropdown(false);
-    navigate("/account/login");
+    window.location.href = "/account/login";
   };
 
   // Fetch categories for dropdown
@@ -91,7 +99,7 @@ const Navbar = () => {
   // Debounced search suggestions
   useEffect(() => {
     const fetchSearchSuggestions = async () => {
-      if (searchQuery.trim().length < 2) {
+      if (searchQuery.trim().length < 1) {
         setSearchSuggestions([]);
         setShowSuggestions(false);
         return;
@@ -99,7 +107,7 @@ const Navbar = () => {
 
       try {
         setSearchLoading(true);
-        
+
         // Fetch products based on category
         let allProducts = [];
         if (currentCategory) {
@@ -112,9 +120,15 @@ const Navbar = () => {
         const searchTerm = searchQuery.toLowerCase().trim();
         const filtered = allProducts
           .filter((product) => {
-            const titleMatch = product.title?.toLowerCase().includes(searchTerm);
-            const descriptionMatch = product.description?.toLowerCase().includes(searchTerm);
-            const categoryMatch = product.category?.toLowerCase().includes(searchTerm);
+            const titleMatch = product.title
+              ?.toLowerCase()
+              .includes(searchTerm);
+            const descriptionMatch = product.description
+              ?.toLowerCase()
+              .includes(searchTerm);
+            const categoryMatch = product.category
+              ?.toLowerCase()
+              .includes(searchTerm);
             return titleMatch || descriptionMatch || categoryMatch;
           })
           .slice(0, 5);
@@ -184,11 +198,18 @@ const Navbar = () => {
       <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 w-full sticky top-0 left-0 right-0 z-50">
         <div className="container mx-auto flex items-center justify-between px-4 py-4 gap-2 md:gap-4">
           {/* Left Section - Logo */}
-          <Link to="/" className="flex items-center gap-2 md:gap-2.5 hover:opacity-80 transition-opacity shrink-0">
+          <Link
+            to="/"
+            className="flex items-center gap-2 md:gap-2.5 hover:opacity-80 transition-opacity shrink-0"
+          >
             <img src={logo} alt="logo" className="w-8 h-8 md:w-9 md:h-9" />
             <div className="flex items-baseline">
-              <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900">JinStore</h1>
-              <span className="text-xs md:text-sm text-purple-600 ml-1 font-medium">.com</span>
+              <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900">
+                JinStore
+              </h1>
+              <span className="text-xs md:text-sm text-purple-600 ml-1 font-medium">
+                .com
+              </span>
             </div>
           </Link>
 
@@ -315,10 +336,10 @@ const Navbar = () => {
                   className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   <div className="w-9 h-9 bg-linear-to-br from-purple-600 to-purple-700 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md">
-                    {user?.username?.charAt(0).toUpperCase() || "U"}
+                    {user?.name?.charAt(0).toUpperCase() || "U"}
                   </div>
                   <span className="text-sm font-medium text-gray-700 hidden lg:block">
-                    {user?.username || "User"}
+                    {user?.name || "User"}
                   </span>
                 </button>
                 {showDropdown && (
@@ -363,7 +384,7 @@ const Navbar = () => {
               to="/cart"
               className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <Badge badgeContent={getTotalItems()} color="error">
+              <Badge badgeContent={lengthCartItems} color="error">
                 <HiOutlineShoppingCart className="text-xl text-gray-700" />
               </Badge>
             </Link>
@@ -414,7 +435,9 @@ const Navbar = () => {
                       All Categories
                     </Link>
                     {categoriesLoading ? (
-                      <div className="px-4 py-2 text-sm text-gray-500">Loading...</div>
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        Loading...
+                      </div>
                     ) : (
                       categories.map((category) => (
                         <Link
@@ -471,9 +494,9 @@ const Navbar = () => {
             className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity relative"
           >
             <HiOutlineShoppingCart className="text-xl text-gray-700" />
-            {getTotalItems() > 0 && (
+            {lengthCartItems > 0 && (
               <span className="absolute top-1 right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {getTotalItems()}
+                {lengthCartItems}
               </span>
             )}
             <span className="text-xs text-gray-600 mt-1">Cart</span>

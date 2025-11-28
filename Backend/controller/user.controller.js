@@ -34,7 +34,7 @@ exports.login = async (req, res) => {
       return res.status(404).send({ message: "Invalid Email or Password" });
 
     // compare password
-    const comparePassword = bcrypt.compare(password, user.password);
+    const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword)
       return res.status(400).send({ message: "Invalid Email or Password" });
 

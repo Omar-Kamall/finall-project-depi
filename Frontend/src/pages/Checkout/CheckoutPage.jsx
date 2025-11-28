@@ -1,24 +1,26 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
-import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
+import { postOrder } from "../../api/order";
+import { useUser } from "../../context/UserContext";
 
 const CheckoutPage = () => {
-  const { cartItems, getTotalPrice, clearCart } = useCart();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { user } = useUser();
+  const { cartItems, totalPrice , clearCartItems } = useCart();
+  const isAuthenticated = localStorage.getItem("token");
   const { success, error: showError } = useToast();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    email: "",
     country: "",
     streetAddress: "",
     apartment: "",
     city: "",
     phone: "",
-    email: user?.email || "",
     orderNotes: "",
   });
 
@@ -27,30 +29,27 @@ const CheckoutPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const shippingCost = shippingMethod === "flat_rate" ? 15.0 : 0;
-  const subtotal = getTotalPrice();
+  const subtotal = totalPrice();
   const total = subtotal + shippingCost;
 
   // Redirect if not authenticated or cart is empty
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
+    if (!isAuthenticated) {
       navigate("/account/login");
     }
-    if (!authLoading && isAuthenticated && cartItems.length === 0) {
-      navigate("/cart");
-    }
-  }, [authLoading, isAuthenticated, cartItems.length, navigate]);
+  }, [isAuthenticated, cartItems.length, navigate]);
 
   // Pre-fill form with user data if available
-  useEffect(() => {
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        email: user.email || "",
-        firstName: user.username?.split(" ")[0] || "",
-        lastName: user.username?.split(" ").slice(1).join(" ") || "",
-      }));
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       email: user.email || "",
+  //       firstName: user.username?.split(" ")[0] || "",
+  //       lastName: user.username?.split(" ").slice(1).join(" ") || "",
+  //     }));
+  //   }
+  // }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -58,6 +57,28 @@ const CheckoutPage = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const orderPayload = {
+    fname: formData.firstName,
+    lname: formData.lastName,
+    country: formData.country,
+    city: formData.city,
+    address: {
+      street: formData.streetAddress,
+      apartment: formData.apartment,
+    },
+    email: formData.email || user.email ,
+    phone: formData.phone,
+    notes: formData.orderNotes,
+    products: cartItems.map((item) => ({
+      productId: item.productId,
+      title: item.title,
+      image: item.image,
+      quantity: item.quantity,
+      price: item.price ,
+    })),
+    totalPrice: totalPrice() || 0,
   };
 
   const handleSubmit = async (e) => {
@@ -71,10 +92,10 @@ const CheckoutPage = () => {
     setIsSubmitting(true);
     try {
       // Simulate order processing
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await postOrder(orderPayload);
 
       // Clear cart after successful order
-      await clearCart();
+      await clearCartItems();
       success("Order placed successfully!");
       navigate("/");
     } catch {
@@ -84,7 +105,7 @@ const CheckoutPage = () => {
     }
   };
 
-  if (authLoading || !isAuthenticated || cartItems.length === 0) {
+  if (!isAuthenticated || cartItems.length === 0) {
     return null;
   }
 
@@ -127,7 +148,9 @@ const CheckoutPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Section - Billing Details */}
             <div className="lg:col-span-2">
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">Billing details</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-6">
+                Billing details
+              </h1>
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-6">
                 {/* Name Fields */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -186,7 +209,10 @@ const CheckoutPage = () => {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   >
                     <option value="">Select a country / region</option>
-                    <option value="United States (US)">United States (US)</option>
+                    <option value="Egypt">Egypt</option>
+                    <option value="United States (US)">
+                      United States (US)
+                    </option>
                     <option value="Canada">Canada</option>
                     <option value="United Kingdom">United Kingdom</option>
                     <option value="Australia">Australia</option>
@@ -312,7 +338,9 @@ const CheckoutPage = () => {
 
                 {/* Shipping */}
                 <div className="border-t border-gray-200 pt-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Shipping</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                    Shipping
+                  </h3>
                   <div className="space-y-2">
                     <label className="flex items-center cursor-pointer">
                       <input
@@ -324,7 +352,10 @@ const CheckoutPage = () => {
                         className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
                       />
                       <span className="text-gray-700">
-                        Flat rate: <span className="font-semibold">${shippingCost.toFixed(2)}</span>
+                        Flat rate:{" "}
+                        <span className="font-semibold">
+                          ${shippingCost.toFixed(2)}
+                        </span>
                       </span>
                     </label>
                     <label className="flex items-center cursor-pointer">
@@ -343,9 +374,13 @@ const CheckoutPage = () => {
 
                 {/* Privacy Policy */}
                 <p className="text-xs text-gray-600">
-                  Your personal data will be used to process your order, support your experience
-                  throughout this website, and for other purposes described in our{" "}
-                  <Link to="/privacy" className="text-purple-600 hover:text-purple-700">
+                  Your personal data will be used to process your order, support
+                  your experience throughout this website, and for other
+                  purposes described in our{" "}
+                  <Link
+                    to="/privacy"
+                    className="text-purple-600 hover:text-purple-700"
+                  >
                     privacy policy
                   </Link>
                   .
@@ -361,7 +396,10 @@ const CheckoutPage = () => {
                   />
                   <span className="text-sm text-gray-700">
                     I have read and agree to the website{" "}
-                    <Link to="/terms" className="text-purple-600 hover:text-purple-700">
+                    <Link
+                      to="/terms"
+                      className="text-purple-600 hover:text-purple-700"
+                    >
                       terms and conditions
                     </Link>
                   </span>
@@ -381,14 +419,18 @@ const CheckoutPage = () => {
             {/* Right Section - Order Details */}
             <div className="lg:col-span-1">
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 sticky top-4">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Your order</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-6">
+                  Your order
+                </h2>
 
                 {/* Products List */}
                 <div className="border-b border-gray-200 pb-4 mb-4">
                   <table className="w-full">
                     <thead>
                       <tr className="text-left">
-                        <th className="text-sm font-semibold text-gray-700 pb-2">Product</th>
+                        <th className="text-sm font-semibold text-gray-700 pb-2">
+                          Product
+                        </th>
                         <th className="text-sm font-semibold text-gray-700 pb-2 text-right">
                           Subtotal
                         </th>
@@ -396,12 +438,18 @@ const CheckoutPage = () => {
                     </thead>
                     <tbody>
                       {cartItems.map((item) => (
-                        <tr key={item.id} className="border-b border-gray-100">
+                        <tr key={item.productId} className="border-b border-gray-100">
                           <td className="py-3 text-gray-900">
-                            {item.title} <span className="text-gray-500">× {item.quantity || 1}</span>
+                            {item.title}{" "}
+                            <span className="text-gray-500">
+                              × {item.quantity || 1}
+                            </span>
                           </td>
                           <td className="py-3 text-gray-900 text-right">
-                            ${((item.price || 0) * (item.quantity || 1)).toFixed(2)}
+                            $
+                            {((item.price || 0) * (item.quantity || 1)).toFixed(
+                              2
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -413,25 +461,33 @@ const CheckoutPage = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-gray-700">
                     <span>Subtotal</span>
-                    <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                    <span className="font-semibold">
+                      ${Number(subtotal).toFixed(2) || 0}
+                    </span>
                   </div>
                   <div className="flex justify-between text-gray-700">
                     <span>Shipping</span>
                     <span className="font-semibold">
-                      {shippingMethod === "flat_rate" ? `$${shippingCost.toFixed(2)}` : "Free"}
+                      {shippingMethod === "flat_rate"
+                        ? `$${shippingCost.toFixed(2) || 0}`
+                        : "Free"}
                     </span>
                   </div>
                   <div className="border-t border-gray-200 pt-3">
                     <div className="flex justify-between text-lg font-bold text-gray-900">
                       <span>Total</span>
-                      <span className="text-purple-600">${total.toFixed(2)}</span>
+                      <span className="text-purple-600">
+                        ${Number(total).toFixed(2) || 0}
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 {/* Payment Method */}
                 <div className="border-t border-gray-200 pt-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Payment method</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">
+                    Payment method
+                  </h3>
                   <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center">
                       <input
@@ -440,7 +496,9 @@ const CheckoutPage = () => {
                         readOnly
                         className="mr-3 w-4 h-4 text-purple-600"
                       />
-                      <span className="text-gray-900 font-medium">Cash On Delivery</span>
+                      <span className="text-gray-900 font-medium">
+                        Cash On Delivery
+                      </span>
                     </div>
                     <p className="text-sm text-gray-600 mt-2 ml-7">
                       Pay with cash upon delivery

@@ -40,7 +40,8 @@ const CategoryFilter = ({ products = [], onApply }) => {
       try {
         setLoading(true);
         setError("");
-        const list = await getCategories();
+        const res = await getCategories();
+        const list = res.data;
         if (mounted) setCategories(list);
       } catch (e) {
         if (mounted) setError(e.message || "Failed to load categories");
