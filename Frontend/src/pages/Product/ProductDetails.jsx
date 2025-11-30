@@ -5,8 +5,10 @@ import Loading from "../../components/Loading";
 import Card from "../../components/Card";
 import { useCart } from "../../context/CartContext";
 import { useToast } from "../../context/ToastContext";
+import { useUser } from "../../context/UserContext";
 
 const ProductDetails = () => {
+  const { user } = useUser();
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -236,6 +238,7 @@ const ProductDetails = () => {
                   onClick={async () => {
                     setAdding(true);
                     try {
+                      if(user?.role !== "user") return showError("User Only Can Add To Cart");
                       await addToCart({...product , productId: product._id , quantity: Number(qty) || 1 });
                       success(`${product.title} added to cart!`);
                     } catch {
@@ -254,6 +257,7 @@ const ProductDetails = () => {
                   onClick={async () => {
                     setAdding(true);
                     try {
+                      if(user?.role !== "user") return showError("User Only Can Add To Cart");
                       await addToCart({...product , productId: product._id , quantity: Number(qty) || 1 });
                       navigate("/cart");
                     } catch {

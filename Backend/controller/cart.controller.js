@@ -16,28 +16,34 @@ exports.getCartItems = async (req, res) => {
 exports.addProductToCart = async (req, res) => {
     try {
         const id = req.user?._id;
-        const { productId , title , price , quantity } = req.body;
+        const role = req.user?.role;
+        const { productId, title, price, quantity } = req.body;
 
-        const findProduct = await productModel.findById(req.body.productId);
-        if (!findProduct || !productId || !title || !price || !quantity) {
-            return res.status(400).json({ message: "Product not found" });
+        if (role === "user") {
+
+            const findProduct = await productModel.findById(req.body.productId);
+            if (!findProduct || !productId || !title || !price || !quantity) {
+                return res.status(400).json({ message: "Product not found" });
+            }
+
+            const checkProduct = await cartModel.findOne({
+                productId: req.body.productId,
+                createdBy: id
+            });
+            if (checkProduct) {
+                return res.status(401).json({ message: "Product Alredey Exit" });
+            }
+
+            const newProduct = new cartModel({ ...req.body, createdBy: id });
+            const product = await newProduct.save();
+
+            return res.status(201).json({ data: product, message: "Post Product Succssesfuly" });
+        } else {
+            return res.status(500).send({ message: "Can't Add To Cart" });
         }
-
-        const checkProduct = await cartModel.findOne({
-            productId: req.body.productId,
-            createdBy: id
-        });
-        if (checkProduct) {
-            return res.status(401).json({ message: "Product Alredey Exit" });
-        }
-
-        const newProduct = new cartModel({ ...req.body, createdBy: id });
-        const product = await newProduct.save();
-
-        return res.status(201).json({ data: product, message: "Post Product Succssesfuly" });
 
     } catch (error) {
-        res.status(500).send({ message: error.message });
+        return res.status(500).send({ message: error.message });
     }
 }
 
@@ -56,7 +62,7 @@ exports.updateProductQuantity = async (req, res) => {
         if (!product) {
             const newProduct = new cartModel({ ...req.body, createdBy: userId });
             await newProduct.save();
-            return res.status(201).json({data: newProduct , message: "Post Product Succssesfuly"})
+            return res.status(201).json({ data: newProduct, message: "Post Product Succssesfuly" })
         }
 
 
@@ -83,7 +89,7 @@ exports.removeProductFromCart = async (req, res) => {
             return res.status(400).json({ message: "Product Not Found" });
         }
 
-        const deleteProduct = await cartModel.findOneAndDelete({productId: id , createdBy: userId});
+        const deleteProduct = await cartModel.findOneAndDelete({ productId: id, createdBy: userId });
 
         return res.status(204).json({ data: deleteProduct, message: "Deleted Product Succssesfuly" });
     } catch (error) {

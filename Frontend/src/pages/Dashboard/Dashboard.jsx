@@ -1,14 +1,20 @@
 // Main dashboard page
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ProductList from '../../components/Vendor/ProductList';
-import ProductForm from '../../components/Vendor/ProductForm';
-import { useToast } from '../../context/ToastContext';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import ProductList from "../../components/Dashboard/ProductList";
+import ProductForm from "../../components/Dashboard/ProductForm";
+import { useToast } from "../../context/ToastContext";
+import {
+  deleteProduct,
+  getAllProducts,
+  postProduct,
+  updateProduct,
+} from "../../api/Products";
 
-const VendorDashboard = () => {
+const Dashboard = () => {
   const navigate = useNavigate();
   const { success, error: showError } = useToast();
-  
+
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -18,25 +24,26 @@ const VendorDashboard = () => {
 
   // Check authentication
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      navigate('/account/login');
+      navigate("/account/login");
     }
   }, [navigate]);
 
-  // Load vendor products
+  // Load products
   useEffect(() => {
     loadProducts();
-  }, []);
+  },[]);
 
-  const loadProducts = () => {
+  const loadProducts = async () => {
     setIsLoading(true);
     try {
-      const vendorProducts = /*getVendorProducts()*/[];
-      setProducts(vendorProducts);
+      const res = await getAllProducts();
+      const products = res.data;
+      setProducts(products);
     } catch (error) {
-      showError('Failed to load products');
-      console.error('Error loading products:', error);
+      showError("Failed to load products");
+      console.error("Error loading products:", error);
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +54,7 @@ const VendorDashboard = () => {
     setShowForm(true);
   };
 
-  const handleEditProduct = (product) => {
+  const handleEditProduct = async (product) => {
     setEditingProduct(product);
     setShowForm(true);
   };
@@ -57,64 +64,80 @@ const VendorDashboard = () => {
     setEditingProduct(null);
   };
 
-  const handleSubmitProduct = async (productData) => {
+  const handleSubmitProduct = async (product) => {
     setIsSubmitting(true);
-    try {
-      // TODO: Add Cloudinary upload logic here
-      // If productData.imageFile exists, upload it to Cloudinary first
-      // Then use the returned URL for the product image
-      // Example:
-      // if (productData.imageFile) {
-      //   const imageUrl = await uploadToCloudinary(productData.imageFile);
-      //   productData.image = imageUrl;
-      //   delete productData.imageFile;
-      // }
 
+    if (!product) {
+      showError("No product data provided");
+      return;
+    }
+
+    const formDataToSend = new FormData();
+    if (editingProduct && product._id) {
+      formDataToSend.append("_id", product._id);
+    }
+    formDataToSend.append("title", product?.title || "");
+    formDataToSend.append("price", Number(product?.price || 0));
+    formDataToSend.append(
+      "oldPrice",
+      product?.oldPrice ? Number(product.oldPrice || 0) : ""
+    );
+    formDataToSend.append("description", product?.description || "");
+    formDataToSend.append("category", product?.category || "");
+    formDataToSend.append("count", Number(product?.count || 0));
+
+    if (product?.imageFile) {
+      formDataToSend.append("image", product?.imageFile || "");
+    } else {
+      formDataToSend.append("image", product?.image || "");
+    }
+    try {
       if (editingProduct) {
-        // Update existing product
-        const updated = /*updateProduct(editingProduct.id, productData)*/false;
-        if (updated) {
-          success('Product updated successfully!');
+        // Call API
+        await updateProduct(formDataToSend);
+        if (formDataToSend) {
+          success("Product updated successfully!");
           setShowForm(false);
           setEditingProduct(null);
           loadProducts();
+          window.location.href = "/dashboard";
         } else {
-          showError('Failed to update product');
+          showError("Failed to update product");
         }
       } else {
         // Create new product
-        /*createProduct(productData)*/;
-        success('Product added successfully!');
+        await postProduct(formDataToSend);
+        success("Product added successfully!");
         setShowForm(false);
         loadProducts();
       }
     } catch (error) {
-      showError('Failed to save product. Please try again.');
-      console.error('Error saving product:', error);
+      showError("Failed to save product. Please try again.");
+      console.error("Error saving product:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDeleteClick = (product) => {
+  const handleDeleteClick = async (product) => {
     setShowDeleteConfirm(product);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!showDeleteConfirm) return;
 
     try {
-      const deleted = /*deleteProduct(showDeleteConfirm.id)*/false;
+      const deleted = await deleteProduct(showDeleteConfirm._id);
       if (deleted) {
-        success('Product deleted successfully!');
+        success("Product deleted successfully!");
         setShowDeleteConfirm(null);
         loadProducts();
       } else {
-        showError('Failed to delete product');
+        showError("Failed to delete product");
       }
     } catch (error) {
-      showError('Failed to delete product. Please try again.');
-      console.error('Error deleting product:', error);
+      showError("Failed to delete product. Please try again.");
+      console.error("Error deleting product:", error);
     }
   };
 
@@ -129,7 +152,7 @@ const VendorDashboard = () => {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Vendor Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
               <p className="mt-2 text-sm text-gray-600">
                 Manage your products and track your inventory
               </p>
@@ -163,7 +186,7 @@ const VendorDashboard = () => {
         {showForm && (
           <div className="mb-8 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              {editingProduct ? 'Edit Product' : 'Add New Product'}
+              {editingProduct ? "Edit Product" : "Add New Product"}
             </h2>
             <ProductForm
               product={editingProduct}
@@ -195,10 +218,12 @@ const VendorDashboard = () => {
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Product</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Delete Product
+              </h3>
               <p className="text-gray-600 mb-6">
-                Are you sure you want to delete "{showDeleteConfirm.title}"? This action cannot be
-                undone.
+                Are you sure you want to delete "{showDeleteConfirm.title}"?
+                This action cannot be undone.
               </p>
               <div className="flex gap-3">
                 <button
@@ -222,5 +247,4 @@ const VendorDashboard = () => {
   );
 };
 
-export default VendorDashboard;
-
+export default Dashboard;

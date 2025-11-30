@@ -2,16 +2,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
+import { useUser } from "../context/UserContext";
 
 const Card = ({
   imageSrc,
   title,
+  description,
   price,
   oldPrice,
   reviewCount,
   inStock = true,
   productId,
 }) => {
+  const { user } = useUser();
   const { addToCart } = useCart();
   const isAuthenticated = localStorage.getItem("token");
   const { success, error: showError } = useToast();
@@ -31,6 +34,8 @@ const Card = ({
       navigate("/account/login");
       return;
     }
+
+    if(user?.role !== "user") return showError("User Only Can Add To Cart");
 
     setAdding(true);
 
@@ -103,9 +108,9 @@ const Card = ({
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3">
+      <div className="p-4 space-y-2">
         {/* Title */}
-        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 min-h-10">
+        <h3 className="line-clamp-2 text-sm font-semibold text-gray-900 min-h-7">
           {productId ? (
             <Link
               to={`/product/${productId}`}
@@ -117,6 +122,9 @@ const Card = ({
             title || "Product name goes here"
           )}
         </h3>
+
+        <p className="line-clamp-2 text-[#474747]">{description || 'Untitled description'}</p>
+
 
         {/* Rating */}
         <div className="flex items-center gap-2">

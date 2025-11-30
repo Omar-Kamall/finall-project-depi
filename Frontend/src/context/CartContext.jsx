@@ -1,16 +1,18 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   getCartItems,
-  addCart,
-  clearCart,
-  removeProductFromCart,
-  updateCartQuantity,
+  // addCart,
+  // clearCart,
+  // removeProductFromCart,
+  // updateCartQuantity,
 } from "../api/cart";
+import { useUser } from "./UserContext";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,67 +27,70 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   const addToCart = async (product) => {
-    const findProduct = cartItems.find((item) => item.productId === product.productId);
-    if (findProduct) {
-      const newQuantity =
-        Number(findProduct.quantity || 0) + Number(product.quantity || 1);
-      setCartItems(
-        cartItems.map((item) =>
-          item.productId === product.productId ? { ...item, quantity: newQuantity } : item
-        )
+    if (user.role === "user") {
+      const findProduct = cartItems.find(
+        (item) => item.productId === product.productId
       );
+      if (findProduct) {
+        const newQuantity =
+          Number(findProduct.quantity || 0) + Number(product.quantity || 1);
+        setCartItems(
+          cartItems.map((item) =>
+            item.productId === product.productId
+              ? { ...item, quantity: newQuantity }
+              : item
+          )
+        );
 
-      await updateCartQuantity({...product , quantity: newQuantity});
-    } else {
-      setCartItems([...cartItems, product]);
-      await addCart(product);
+        // await updateCartQuantity({...product , quantity: newQuantity});
+      } else {
+        setCartItems([...cartItems, product]);
+        // await addCart(product);
+      }
     }
   };
-
-
-
 
   const totalPrice = () =>
     cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-
-
-
   const removeFromCart = async (productId) => {
-    const findProduct = cartItems.find((item) => item.productId === productId);
-    if (!findProduct) return "Product Not Found";
+    if (user.role === "user") {
+      const findProduct = cartItems.find(
+        (item) => item.productId === productId
+      );
+      if (!findProduct) return "Product Not Found";
 
-    setCartItems(cartItems.filter((item) => item.productId !== productId));
+      setCartItems(cartItems.filter((item) => item.productId !== productId));
 
-    await removeProductFromCart(productId);
+      // await removeProductFromCart(productId);
+    }
   };
-
-
-
 
   const updateQuantity = async (product) => {
-    const findProduct = cartItems.find((item) => item.productId === product.productId);
-    if (!findProduct) return "Product Not Found";
+    if (user.role === "user") {
+      const findProduct = cartItems.find(
+        (item) => item.productId === product.productId
+      );
+      if (!findProduct) return "Product Not Found";
 
-    setCartItems(
-      cartItems.map((item) =>
-        item.productId === product.productId ? { ...item, quantity: product.quantity } : item
-      )
-    );
-    await updateCartQuantity(product);
+      setCartItems(
+        cartItems.map((item) =>
+          item.productId === product.productId
+            ? { ...item, quantity: product.quantity }
+            : item
+        )
+      );
+      // await updateCartQuantity(product);
+    }
   };
-
-
-
 
   const clearCartItems = async () => {
-    setCartItems([]);
-    await clearCart();
+    if (user.role === "user") {
+      setCartItems([]);
+      // await clearCart();
+    }
   };
 
-
-
-  
   return (
     <CartContext.Provider
       value={{

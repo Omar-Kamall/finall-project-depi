@@ -3,15 +3,15 @@ const schema = mongoose.Schema;
 
 const productModel = new schema(
   {
-    title: { type: String, require: true },
-    price: { type: Number, require: true },
-    oldPrice: { type: Number, require: true },
-    description: { type: String, require: true },
-    category: { type: String, require: true },
-    image: { type: String, require: true },
-    imagePublicId: { type: String, require: true },
-    count: { type: Number, require: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" , require: true },
+    title: { type: String, required: true },
+    price: { type: Number, required: true },
+    oldPrice: { type: Number, required: true },
+    description: { type: String },
+    category: { type: String, required: true },
+    image: { type: String, required: true },
+    imagePublicId: { type: String, required: true },
+    count: { type: Number, required: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" , required: true },
   },
   {
     versionKey: false,

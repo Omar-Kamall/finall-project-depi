@@ -3,8 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { getAllProducts } from "../../api/Products";
 import { useCart } from "../../context/CartContext";
 import { useToast } from "../../context/ToastContext";
+import { useUser } from "../../context/UserContext";
 
 const Hero = () => {
+  const { user } = useUser();
   const [product, setProduct] = useState(null);
   const [imageLoaded, setImageLoaded] = useState(false);
   const { addToCart } = useCart();
@@ -38,6 +40,8 @@ const Hero = () => {
       navigate("/account/login");
       return;
     }
+
+    if(user?.role !== "user") return showError("User Only Can Add To Cart");
 
     productData = {
       productId: product._id,

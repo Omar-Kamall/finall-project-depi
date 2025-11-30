@@ -45,6 +45,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setUser(null);
+    localStorage.removeItem("user")
     setShowDropdown(false);
     window.location.href = "/account/login";
   };
@@ -370,24 +371,34 @@ const Navbar = () => {
             )}
 
             {/* Wishlist */}
-            <Link
-              to="/wishlist"
-              className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <Badge badgeContent={0} color="error">
-                <HiOutlineHeart className="text-xl text-gray-700" />
-              </Badge>
-            </Link>
+            {user?.role === "admin" || user?.role === "saller" ? (
+              <Link
+                to="/dashboard"
+                className="relative p-2 rounded-lg text-bold bg-purple-600 text-white transition-colors"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/wishlist"
+                  className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <Badge badgeContent={0} color="error">
+                    <HiOutlineHeart className="text-xl text-gray-700" />
+                  </Badge>
+                </Link>
 
-            {/* Shopping Cart */}
-            <Link
-              to="/cart"
-              className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <Badge badgeContent={lengthCartItems} color="error">
-                <HiOutlineShoppingCart className="text-xl text-gray-700" />
-              </Badge>
-            </Link>
+                <Link
+                  to="/cart"
+                  className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <Badge badgeContent={lengthCartItems} color="error">
+                    <HiOutlineShoppingCart className="text-xl text-gray-700" />
+                  </Badge>
+                </Link>
+              </>
+            )}
           </div>
         </div>
 

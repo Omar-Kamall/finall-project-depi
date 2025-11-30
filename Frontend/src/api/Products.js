@@ -6,7 +6,7 @@ const Api = "http://localhost:5050/api";
 const productsApi = axios.create({
   baseURL: Api,
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "multipart/form-data",
   },
 });
 
@@ -30,6 +30,41 @@ export const getAllProducts = async () => {
     throw new Error(error.message);
   }
 };
+
+
+// add product
+export const postProduct = async (product) => {
+  try {
+    const response = await productsApi.post("/product" , product);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+
+// update product
+export const updateProduct = async (product) => {
+  try {
+    const id = product.get("_id")
+    const response = await productsApi.put(`/product/${id}` , product);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+
+// delete product
+export const deleteProduct = async (id) => {
+  try {
+    const response = await productsApi.delete(`/product/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 
 // Fetch single product by ID
 export const getProductById = async (id) => {

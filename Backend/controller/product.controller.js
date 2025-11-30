@@ -126,7 +126,7 @@ exports.editProduct = async (req, res) => {
       // status true founded product
       return res
         .status(200)
-        .json({ data: updateProduct, message: "Post Product Succssesfuly" });
+        .json({ data: updateProduct, message: "Update Product Succssesfuly" });
     } else if (role === "saller") {
       if (product.createdBy.toString() !== userId)
         return res.status(403).json({
@@ -143,7 +143,7 @@ exports.editProduct = async (req, res) => {
       // status true founded product
       return res
         .status(200)
-        .json({ data: updateProduct, message: "Post Product Succssesfuly" });
+        .json({ data: updateProduct, message: "Update Product Succssesfuly" });
     } else
       return res
         .status(403)
@@ -221,22 +221,33 @@ exports.deleteProduct = async (req, res) => {
 };
 
 
-exports.getCategories = async (req , res) => {
+exports.getCategories = async (req, res) => {
   try {
     const findCategories = await productModel.distinct("category")
-    return res.status(200).json({data: findCategories , message: "Get Categorys Succssesfuly"})
+    return res.status(200).json({ data: findCategories, message: "Get Categorys Succssesfuly" })
   } catch (error) {
-    return res.status().send({message: error.messgae});
+    return res.status().send({ message: error.messgae });
   }
 }
 
 
-exports.getCategory = async (req , res) => {
+exports.getCategory = async (req, res) => {
   try {
-    const Category = req.params.category;
-    const findByCategory = await productModel.find({category: Category})
-    return res.status(200).json({data: findByCategory , message: "Get Category Succssesfuly"})
+    const id = req.user?._id;
+    const role = req.user?.role;
+    const Category = req.params?.category;
+
+    if(role === "admin" || role === "saller") {
+      const findByCategory = await productModel.find({ createdBy: id , category: Category })
+      return res.status(200).json({ data: findByCategory, message: "Get Category Succssesfuly" })
+    } else if (role === "user"){
+      const findByCategory = await productModel.find({ category: Category })
+      return res.status(200).json({ data: findByCategory, message: "Get Category Succssesfuly" })
+    } else {
+      const findByCategory = await productModel.find({ category: Category })
+      return res.status(200).json({ data: findByCategory, message: "Get Category Succssesfuly" })
+    }
   } catch (error) {
-    return res.status().send({message: error.messgae});
+    return res.status(500).send({ message: error.message });
   }
 }

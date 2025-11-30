@@ -33,11 +33,13 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
       </div>
 
       {/* Product Info */}
-      <div className="p-4 space-y-3">
+      <div className="p-4 space-y-2">
         {/* Title */}
-        <h3 className="text-base font-semibold text-gray-900 line-clamp-2 min-h-10">
+        <h3 className="text-base font-semibold text-gray-900 line-clamp-2 min-h-7">
           {product.title || 'Untitled Product'}
         </h3>
+
+        <p className="line-clamp-2 text-[#474747]">{product.description || 'Untitled description'}</p>
 
         {/* Category Badge */}
         {product.category && (

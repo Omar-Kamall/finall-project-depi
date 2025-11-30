@@ -26,7 +26,7 @@ const CheckoutPage = lazy(() => import("./pages/Checkout/CheckoutPage"));
 const BlogPage = lazy(() => import("./pages/Blog"));
 const ContactPage = lazy(() => import("./pages/Contact"));
 const SearchResults = lazy(() => import("./pages/SearchResults"));
-const VendorDashboard = lazy(() => import("./pages/Vendor/VendorDashboard"));
+const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 
 const Layout = () => {
   return (
@@ -73,7 +73,7 @@ const App = () => {
         <Route path="blog" element={<BlogPage />} />
         <Route path="contact" element={<ContactPage />} />
         <Route path="search" element={<SearchResults />} />
-        <Route path="vendor/dashboard" element={<VendorDashboard />} />
+        <Route path="dashboard" element={<Dashboard />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     )

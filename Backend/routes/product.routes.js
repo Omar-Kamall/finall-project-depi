@@ -14,8 +14,8 @@ const router = express.Router();
 
 router.get("/products" , authentication , getAllProducts);
 router.get("/product/:id", getProduct);
-router.get("/products/category/:category", getCategory);
-router.get("/products/categories", getCategories);
+router.get("/products/category/:category", authentication , getCategory);
+router.get("/products/categories" , getCategories);
 router.post("/product", authentication, uploadImage.single("image"), postProduct);
 router.put("/product/:id", authentication, uploadImage.single("image") , editProduct);
 router.delete("/product/:id", authentication, uploadImage.single("image"), deleteProduct);

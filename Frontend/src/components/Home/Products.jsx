@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -73,12 +72,13 @@ const Products = () => {
       {/* Top Rated Section */}
       <h2 className="font-bold text-2xl mb-6">Top Rated:</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12 gap-6">
-        {topRated.map((p) => (
+        {topRated.slice(0,4).map((p) => (
           <Card
             key={p._id}
             productId={p._id}
             imageSrc={p.image}
             title={p.title}
+            description={p.description}
             price={p.price}
             oldPrice={p.oldPrice}
             reviewCount={p.count}
@@ -87,7 +87,7 @@ const Products = () => {
       </div>
 
       {/* Products by Category */}
-      {categories.map((category) => (
+      {categories.filter(category => productsByCategory[category].length > 0).map((category) => (
         <div key={category} className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-bold text-2xl capitalize">{category}:</h2>
@@ -112,13 +112,15 @@ const Products = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {productsByCategory[category]?.slice(0, 4).map((p) => (
+            {productsByCategory[category].slice(0, 4).map((p) => (
               <Card
                 key={p._id}
                 productId={p._id}
                 imageSrc={p.image}
                 title={p.title}
+                description={p.description}
                 price={p.price}
+                oldPrice={p?.oldPrice || 0}
                 reviewCount={p.count}
               />
             ))}
