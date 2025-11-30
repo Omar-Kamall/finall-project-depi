@@ -540,6 +540,7 @@ We would like to thank all the contributors who have helped make this project po
 - **[Mohammed Ali](https://github.com/MoohammedAli)**
 - **[Omar Kamal](https://github.com/Omar-Kamall)**
 - **[Ahmed Samy](https://github.com/ahmedsamy13)**
+- **[Usuf Gomaa](https://github.com/Usuf-Gomaa)**
 
 ---
 
