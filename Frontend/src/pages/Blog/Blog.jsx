@@ -1,6 +1,26 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import blogData from './blogData.json';
+import groceryImage from '../../Imgs/posts/grocers.png';
+import fridayImage from '../../Imgs/posts/friday.png';
+import dunhumbyImage from '../../Imgs/posts/dunnhumby.png';
+import sustainableImage from '../../Imgs/posts/sustainable.png';
+import mealKitImage from '../../Imgs/posts/meal-kit.png';
+import organicImage from '../../Imgs/posts/organic.png';
+import sourcingImage from '../../Imgs/posts/sourcing.png';
+import smartShoppingImage from '../../Imgs/posts/smart-shopping.png';
+
+// Image mapping - maps image names from JSON to imported images
+const imageMap = {
+  'grocers.png': groceryImage,
+  'friday.png': fridayImage,
+  'dunnhumby.png': dunhumbyImage,
+  'sustainable.png': sustainableImage,
+  'meal-kit.png': mealKitImage,
+  'organic.png': organicImage,
+  'sourcing.png': sourcingImage,
+  'smart-shopping.png': smartShoppingImage,
+};
 
 const Blog = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,10 +74,10 @@ const Blog = () => {
               className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
             >
               {/* Post Image */}
-              {post.image ? (
+              {post.image && imageMap[post.image] ? (
                 <div className="w-full h-64 bg-gray-100 overflow-hidden">
                   <img
-                    src={post.image}
+                    src={imageMap[post.image]}
                     alt={post.title}
                     className="w-full h-full object-cover"
                   />
