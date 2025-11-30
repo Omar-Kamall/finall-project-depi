@@ -532,13 +532,14 @@ finall-project-depi/
 - Email notifications use Nodemailer (currently configured for Gmail)
 - The project uses role-based access control (user, vendor, admin)
 
-## 👥 Contributing
+## 👥 Contributors
 
-*Add contribution guidelines here if applicable*
+We would like to thank all the contributors who have helped make this project possible:
 
-## 📄 License
-
-*Add license information here if applicable*
+- **[Ahmed Diaa](https://github.com/TheAhmedDiaa/)**
+- **[Mohammed Ali](https://github.com/MoohammedAli)**
+- **[Omar Kamal](https://github.com/Omar-Kamall)**
+- **[Ahmed Samy](https://github.com/ahmedsamy13)**
 
 ---
 
