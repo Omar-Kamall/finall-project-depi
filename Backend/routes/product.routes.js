@@ -18,6 +18,6 @@ router.get("/products/category/:category", authentication , getCategory);
 router.get("/products/categories" , getCategories);
 router.post("/product", authentication, uploadImage.single("image"), postProduct);
 router.put("/product/:id", authentication, uploadImage.single("image") , editProduct);
-router.delete("/product/:id", authentication, uploadImage.single("image"), deleteProduct);
+router.delete("/product/:id", authentication, deleteProduct);
 
 module.exports = router;
