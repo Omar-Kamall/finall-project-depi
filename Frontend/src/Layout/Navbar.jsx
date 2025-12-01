@@ -45,7 +45,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setUser(null);
-    localStorage.removeItem("user")
+    localStorage.removeItem("user");
     setShowDropdown(false);
     window.location.href = "/account/login";
   };
@@ -496,25 +496,37 @@ const Navbar = () => {
             <HiOutlineUser className="text-xl text-gray-700" />
             <span className="text-xs text-gray-600 mt-1">Account</span>
           </Link>
-          <Link
-            to="/wishlist"
-            className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity"
-          >
-            <HiOutlineHeart className="text-xl text-gray-700" />
-            <span className="text-xs text-gray-600 mt-1">Wishlist</span>
-          </Link>
-          <Link
-            to="/cart"
-            className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity relative"
-          >
-            <HiOutlineShoppingCart className="text-xl text-gray-700" />
-            {lengthCartItems > 0 && (
-              <span className="absolute top-1 right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {lengthCartItems}
-              </span>
-            )}
-            <span className="text-xs text-gray-600 mt-1">Cart</span>
-          </Link>
+          {user?.role === "admin" || user?.role === "saller" ? (
+            <Link
+              to="/dashboard"
+              className="flex flex-col items-center relative rounded-lg text-bold text-black transition-colors"
+            >
+              <HiOutlineUser className="text-xl text-gray-700" />
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/wishlist"
+                className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity"
+              >
+                <HiOutlineHeart className="text-xl text-gray-700" />
+                <span className="text-xs text-gray-600 mt-1">Wishlist</span>
+              </Link>
+              <Link
+                to="/cart"
+                className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity relative"
+              >
+                <HiOutlineShoppingCart className="text-xl text-gray-700" />
+                {lengthCartItems > 0 && (
+                  <span className="absolute top-1 right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {lengthCartItems}
+                  </span>
+                )}
+                <span className="text-xs text-gray-600 mt-1">Cart</span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
