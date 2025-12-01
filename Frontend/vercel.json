@@ -1,12 +1,5 @@
 {
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1" // قاعدة لمنع اعتراض طلبات API (هامة للباك إند)
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/build/index.html" // القاعدة التي تعالج الـ 404 للـ SPA
-    }
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
