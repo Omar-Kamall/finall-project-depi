@@ -1,1 +1,8 @@
-
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/build/index.html"
+    }
+  ]
+}
