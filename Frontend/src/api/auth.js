@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:5050/api/users";
+const BASE_URL = "https://jinstore-lac.vercel.app/api/users";
 
 
 // Create axios instance
