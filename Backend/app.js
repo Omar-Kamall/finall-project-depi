@@ -13,12 +13,12 @@ dotenv.config();
 const app = express();
 
 // Configure CORS
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Frontend Link
-    credentials: true, // Send Tokens with Frontend
-  })
-);
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173", // Frontend Link
+//     credentials: true, // Send Tokens with Frontend
+//   })
+// );
 app.use(cors());
 
 // Send Json
@@ -38,6 +38,8 @@ app.use("/api/order", orderRoutes);
 app.use("/api/cart", cartRoutes);
 
 // listen port
-app.listen(port, () => {
-  console.log("Listen Succsses");
-});
+// app.listen(port, () => {
+//   console.log("Listen Succsses");
+// });
+
+module.exports = app;
