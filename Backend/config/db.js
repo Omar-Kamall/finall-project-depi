@@ -6,7 +6,10 @@ const DB_URL = process.env.DB_URL;
 
 exports.connectDB = async () => {
   try {
-    await mongoose.connect(DB_URL);
+    await mongoose.connect(DB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("Succsses DB");
   } catch (error) {
     res.status(400).send(error.message);
