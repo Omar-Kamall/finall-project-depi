@@ -37,7 +37,7 @@ exports.getAllProducts = async (req, res) => {
 
 exports.getProduct = async (req, res) => {
   try {
-    const productId = req.params.id;
+    const productId = req.params?.id;
 
     // find produvt with id
     const product = await productModel.findOne({ _id: productId });
@@ -56,8 +56,8 @@ exports.getProduct = async (req, res) => {
 exports.postProduct = async (req, res) => {
   try {
     // get role with jwt middleware
-    const role = req.user.role;
-    const userId = req.user._id; // user id with jwt middleware
+    const role = req.user?.role;
+    const userId = req.user?._id; // user id with jwt middleware
 
     // check role
     if (role === "admin" || role === "saller") {
@@ -65,8 +65,8 @@ exports.postProduct = async (req, res) => {
       let imagePublicId = "";
 
       if (req.file) {
-        imageUrl = req.file.path;
-        imagePublicId = req.file.filename || req.file.public_id;
+        imageUrl = req.file?.path;
+        imagePublicId = req.file?.filename || req.file?.public_id;
       }
       // new product model and save database
       const newProduct = new productModel({
@@ -95,7 +95,7 @@ exports.editProduct = async (req, res) => {
     const userId = req.user?._id;
 
     // select product id
-    const productId = req.params.id;
+    const productId = req.params?.id;
 
     if (!role) {
       return res.status(401).json({ message: "Unauthorized: Login Required" });
@@ -107,8 +107,8 @@ exports.editProduct = async (req, res) => {
     }
 
     if (req.file) {
-      req.body.image = req.file.path;
-      req.body.imagePublicId = req.file.filename || req.file.public_id;
+      req.body.image = req.file?.path;
+      req.body.imagePublicId = req.file?.filename || req.file?.public_id;
 
       if (product.imagePublicId) {
         await cloudinary.uploader.destroy(product.imagePublicId);
@@ -160,7 +160,7 @@ exports.deleteProduct = async (req, res) => {
     const userId = req.user?._id;
 
     // select product id
-    const productId = req.params.id;
+    const productId = req.params?.id;
 
     if (!role) {
       return res.status(401).json({ message: "Unauthorized: Login Required" });
@@ -181,7 +181,7 @@ exports.deleteProduct = async (req, res) => {
 
       // Delete Photo With Cloudnairy
       if (deleteProduct.imagePublicId) {
-        await cloudinary.uploader.destroy(deleteProduct.imagePublicId);
+        await cloudinary?.uploader?.destroy(deleteProduct?.imagePublicId);
       }
 
       // status true founded product
@@ -190,7 +190,7 @@ exports.deleteProduct = async (req, res) => {
         .json({ data: deleteProduct, message: "Deleted Product Succssesfuly" });
     } else if (role === "saller") {
       // check createdById
-      if (product.createdBy.toString() !== userId)
+      if (product.createdBy?.toString() !== userId)
         return res.status(403).json({
           message: "Access Denied: Sellers can delete only their own products",
         });
@@ -204,7 +204,7 @@ exports.deleteProduct = async (req, res) => {
 
       // Delete Photo With Cloudnairy
       if (deleteProduct.imagePublicId) {
-        await cloudinary.uploader.destroy(deleteProduct.imagePublicId);
+        await cloudinary?.uploader?.destroy(deleteProduct.imagePublicId);
       }
 
       // status true founded product

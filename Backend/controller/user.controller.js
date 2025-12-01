@@ -53,7 +53,7 @@ exports.login = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { email, ...updates } = req.body;
+    const { email, ...updates } = req?.body;
     const userEmail = req.params?.email;
 
     // check user email
@@ -86,7 +86,7 @@ exports.updateProfile = async (req, res) => {
 
 exports.deleteAcounct = async (req, res) => {
   try {
-    const email = req.params.email;
+    const email = req.params?.email;
 
     // check user => email
     const user = await userModel.findOne({ email });

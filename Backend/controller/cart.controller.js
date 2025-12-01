@@ -17,7 +17,7 @@ exports.addProductToCart = async (req, res) => {
     try {
         const id = req.user?._id;
         const role = req.user?.role;
-        const { productId, title, price, quantity } = req.body;
+        const { productId, title, price, quantity } = req?.body;
 
         if (role === "user") {
 
@@ -52,8 +52,8 @@ exports.addProductToCart = async (req, res) => {
 exports.updateProductQuantity = async (req, res) => {
     try {
         const userId = req.user?._id;
-        const productId = req.params.id;
-        const { quantity } = req.body;
+        const productId = req.params?.id;
+        const { quantity } = req?.body;
 
         const product = await cartModel.findOne({
             productId,
@@ -81,7 +81,7 @@ exports.updateProductQuantity = async (req, res) => {
 
 exports.removeProductFromCart = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params?.id;
         const userId = req.user?._id;
 
         const product = await cartModel.findOne({ productId: id });

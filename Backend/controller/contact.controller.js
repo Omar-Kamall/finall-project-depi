@@ -25,7 +25,7 @@ exports.getContacts = async (req, res) => {
 
 exports.postContacts = async (req, res) => {
   try {
-    const newContact = new contactModel(req.body);
+    const newContact = new contactModel(req?.body);
     const dataContact = await newContact.save();
 
     // Send Contact to mail
