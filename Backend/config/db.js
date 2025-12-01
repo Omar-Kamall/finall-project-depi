@@ -9,7 +9,6 @@ exports.connectDB = async () => {
     await mongoose.connect(DB_URL);
     console.log("Succsses DB");
   } catch (error) {
-    res.status(400).send(error.message);
     console.log(error.message);
   }
 };
