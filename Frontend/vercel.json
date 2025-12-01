@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/$1" // القاعدة 1: تسمح بمرور مسارات API دون إعادة توجيه
+      "destination": "/api/$1" 
     },
     {
       "source": "/(.*)",
-      "destination": "/build/index.html" // القاعدة 2: تعيد توجيه جميع المسارات الأخرى إلى index.html
+      "destination": "/build/index.html"
     }
   ]
 }
