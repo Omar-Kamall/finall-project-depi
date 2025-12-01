@@ -237,10 +237,14 @@ exports.getCategory = async (req, res) => {
     const role = req.user?.role;
     const Category = req.params?.category;
 
-    if(role === "admin" || role === "saller") {
-      const findByCategory = await productModel.find({ createdBy: id , category: Category })
+    if (role === "admin") {
+      const findByCategory = await productModel.find({ category: Category })
       return res.status(200).json({ data: findByCategory, message: "Get Category Succssesfuly" })
-    } else if (role === "user"){
+    }
+    else if (role === "saller") {
+      const findByCategory = await productModel.find({ createdBy: id, category: Category })
+      return res.status(200).json({ data: findByCategory, message: "Get Category Succssesfuly" })
+    } else if (role === "user") {
       const findByCategory = await productModel.find({ category: Category })
       return res.status(200).json({ data: findByCategory, message: "Get Category Succssesfuly" })
     } else {

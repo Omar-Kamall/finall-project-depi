@@ -72,7 +72,7 @@ const Products = () => {
       {/* Top Rated Section */}
       <h2 className="font-bold text-2xl mb-6">Top Rated:</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12 gap-6">
-        {topRated.slice(0,4).map((p) => (
+        {topRated.filter(item => item.oldPrice !== 0).slice(0,4).map((p) => (
           <Card
             key={p._id}
             productId={p._id}

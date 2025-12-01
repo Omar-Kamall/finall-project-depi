@@ -193,7 +193,7 @@ const ProductDetails = () => {
                     <span className="text-base text-gray-400 line-through">
                       ${product.oldPrice.toFixed(2)}
                     </span>
-                  )}
+                )}
               </div>
 
               {/* Category badge */}
@@ -204,7 +204,7 @@ const ProductDetails = () => {
               </div>
 
               {/* Offer strip */}
-              {product.oldPrice && (
+              {product.oldPrice !== 0 && (
                 <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
                   {product.oldPrice}
                 </div>

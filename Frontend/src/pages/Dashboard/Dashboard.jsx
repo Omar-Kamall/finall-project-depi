@@ -72,15 +72,16 @@ const Dashboard = () => {
       return;
     }
 
+
     const formDataToSend = new FormData();
-    if (editingProduct && product._id) {
-      formDataToSend.append("_id", product._id);
+    if (editingProduct && editingProduct._id) {
+      formDataToSend.append("_id", editingProduct._id);
     }
     formDataToSend.append("title", product?.title || "");
     formDataToSend.append("price", Number(product?.price || 0));
     formDataToSend.append(
       "oldPrice",
-      product?.oldPrice ? Number(product.oldPrice || 0) : ""
+      product?.oldPrice ? Number(product.oldPrice || 0) : 0
     );
     formDataToSend.append("description", product?.description || "");
     formDataToSend.append("category", product?.category || "");

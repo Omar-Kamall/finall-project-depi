@@ -55,7 +55,8 @@ const Navbar = () => {
     const fetchCategories = async () => {
       try {
         setCategoriesLoading(true);
-        const categoriesData = await getCategories();
+        const res = await getCategories();
+        const categoriesData = res.data;
         setCategories(categoriesData);
       } catch (error) {
         console.error("Failed to fetch categories:", error);
@@ -112,9 +113,11 @@ const Navbar = () => {
         // Fetch products based on category
         let allProducts = [];
         if (currentCategory) {
-          allProducts = await getProductsByCategory(currentCategory);
+          const res = await getProductsByCategory(currentCategory);
+          allProducts = res.data;
         } else {
-          allProducts = await getAllProducts();
+          const res = await getAllProducts();
+          allProducts = res.data;
         }
 
         // Filter products by search query (limit to 5 results)
@@ -283,8 +286,8 @@ const Navbar = () => {
                   <>
                     {searchSuggestions.map((product) => (
                       <div
-                        key={product.id}
-                        onClick={() => handleSuggestionClick(product.id)}
+                        key={product._id}
+                        onClick={() => handleSuggestionClick(product._id)}
                         className="flex items-center gap-3 p-3 hover:bg-purple-50 cursor-pointer transition-colors border-b border-gray-50 last:border-b-0"
                       >
                         <div className="shrink-0 w-14 h-14 bg-gray-50 rounded-lg overflow-hidden border border-gray-100">

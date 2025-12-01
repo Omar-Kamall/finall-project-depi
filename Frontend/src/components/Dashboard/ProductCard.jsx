@@ -55,7 +55,7 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
           <span className="text-xl font-bold text-purple-600">
             ${product.price?.toFixed(2) || '0.00'}
           </span>
-          {product.oldPrice && product.oldPrice > product.price && (
+          {product.oldPrice !== 0 && product.oldPrice > product.price && (
             <span className="text-sm text-gray-400 line-through">
               ${product.oldPrice.toFixed(2)}
             </span>

@@ -60,7 +60,7 @@ const Card = ({
   return (
     <article className="group relative bg-white rounded-2xl overflow-_hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       {/* Discount badge */}
-      {oldPrice && (
+      {oldPrice !== 0 && (
         <span className="absolute left-3 top-3 z-10 rounded-full bg-linear-to-r from-rose-500 to-rose-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
           {discount.toFixed(0)}%
         </span>
@@ -138,7 +138,7 @@ const Card = ({
           <span className="text-xl font-bold text-purple-600">
             {typeof price === "number" ? `$${price.toFixed(2)}` : "$0.00"}
           </span>
-          {oldPrice && (
+          {oldPrice !== 0 && (
             <span className="text-sm text-gray-400 line-through">
               ${oldPrice?.toFixed ? oldPrice.toFixed(2) : oldPrice}
             </span>
