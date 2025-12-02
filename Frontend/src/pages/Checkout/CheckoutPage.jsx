@@ -40,16 +40,18 @@ const CheckoutPage = () => {
   }, [isAuthenticated, cartItems.length, navigate]);
 
   // Pre-fill form with user data if available
-  // useEffect(() => {
-  //   if (user) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       email: user.email || "",
-  //       firstName: user.username?.split(" ")[0] || "",
-  //       lastName: user.username?.split(" ").slice(1).join(" ") || "",
-  //     }));
-  //   }
-  // }, [user]);
+   useEffect(() => {
+     if (user) {
+       setFormData((prev) => ({
+         ...prev,
+         email: user.email || "",
+         firstName: user.name?.split(" ")[0] || "",
+         city: user.city || "",
+         streetAddress: user.address || "",
+         phone: user.phone || "",
+       }));
+     }
+   }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
