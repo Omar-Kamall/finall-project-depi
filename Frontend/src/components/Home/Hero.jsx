@@ -34,14 +34,14 @@ const Hero = () => {
 
   const handleAddToCart = async (productData) => {
     if (!product || adding) return;
-
+    //protected route
     if (!isAuthenticated) {
       showError("Please login to add items to cart");
       navigate("/account/login");
       return;
     }
 
-    if(user?.role !== "user") return showError("User Only Can Add To Cart");
+    if (user?.role !== "user") return showError("User Only Can Add To Cart");
 
     productData = {
       productId: product._id,
