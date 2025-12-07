@@ -239,7 +239,7 @@ const ProductDetails = () => {
                     setAdding(true);
                     try {
                       if(user?.role !== "user") return showError("User Only Can Add To Cart");
-                      await addToCart({...product , productId: product._id , quantity: Number(qty) || 1 });
+                      await addToCart({ ...product , productId: product._id , quantity: Number(qty) || 1 });
                       success(`${product.title} added to cart!`);
                     } catch {
                       showError("Failed to add to cart. Please try again.");
@@ -258,7 +258,7 @@ const ProductDetails = () => {
                     setAdding(true);
                     try {
                       if(user?.role !== "user") return showError("User Only Can Add To Cart");
-                      await addToCart({...product , productId: product._id , quantity: Number(qty) || 1 });
+                      await addToCart({ ...product , productId: product._id , quantity: Number(qty) || 1 });
                       navigate("/cart");
                     } catch {
                       showError("Failed to add to cart. Please try again.");

@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const Api = "https://jinstore-lac.vercel.app/api/cart";
+const Api = "http://localhost:5050/api/cart";
+// const Api = "https://jinstore-lac.vercel.app/api/cart";
 
 // Create axios instance for cart
 const cartApi = axios.create({
