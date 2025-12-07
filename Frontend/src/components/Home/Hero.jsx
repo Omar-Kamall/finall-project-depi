@@ -20,8 +20,8 @@ const Hero = () => {
       try {
         const res = await getAllProducts();
         const products = res.data;
-        if (products && products.length > 0) {
-          const randomIndex = Math.floor(Math.random() * products.length);
+        if (products && products.length > 0 && products.filter(product => product.oldPrice > product.price).length > 0) {
+          const randomIndex = Math.floor(Math.random() * products.filter(product => product.oldPrice > product.price).length);
           setProduct(products[randomIndex]);
         }
       } catch (error) {
@@ -46,6 +46,7 @@ const Hero = () => {
     productData = {
       productId: product._id,
       price: product.price,
+      oldPrice: product.oldPrice,
       title: product.title,
       image: product.image,
       quantity: 1,
