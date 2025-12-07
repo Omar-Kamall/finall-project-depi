@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:5050/api/users";
+const BASE_URL = "https://jinstore-production.up.railway.app/api/users";
 
 
 // Create axios instance

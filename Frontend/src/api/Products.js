@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const Api = "http://localhost:5050/api";
+const Api = "https://jinstore-production.up.railway.app/api";
 
 // Create axios instance for products
 const productsApi = axios.create({
