@@ -206,7 +206,7 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
             htmlFor="price"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Price <span className="text-rose-600">*</span>
+            Main Price / Price After Discount<span className="text-rose-600">*</span>
           </label>
           <input
             type="number"
@@ -231,7 +231,7 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
             htmlFor="oldPrice"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Old Price (optional)
+            Price Before Discount (optional)
           </label>
           <input
             type="number"

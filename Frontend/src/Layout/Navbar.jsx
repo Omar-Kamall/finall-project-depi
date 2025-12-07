@@ -405,13 +405,13 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Bottom Navigation Bar - Desktop Only */}
-        <div className="hidden md:block border-t border-gray-100 bg-white">
+        {/* Bottom Navigation Bar */}
+        <div className="border-t border-gray-100 bg-white">
           <div className="container mx-auto px-4">
             <nav className="flex items-center justify-start gap-8 py-4">
               <Link
                 to="/"
-                className="text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-2 py-1 rounded-lg hover:bg-purple-50"
+                className="text-xs md:text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-1 md:px-2 py-1 rounded-lg hover:bg-purple-50"
               >
                 Home
               </Link>
@@ -421,7 +421,7 @@ const Navbar = () => {
                 <div className="flex items-center gap-1">
                   <Link
                     to="/category"
-                    className="text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-2 py-1 rounded-lg hover:bg-purple-50"
+                    className="text-xs md:text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-1 md:px-2 py-1 rounded-lg hover:bg-purple-50"
                   >
                     Categories
                   </Link>
@@ -429,7 +429,7 @@ const Navbar = () => {
                     onClick={() =>
                       setShowCategoriesDropdown(!showCategoriesDropdown)
                     }
-                    className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-2 py-1 rounded-lg hover:bg-purple-50"
+                    className="flex items-center gap-1 text-xs md:text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-1 md:px-2 py-1 rounded-lg hover:bg-purple-50"
                   >
                     <HiChevronDown
                       className={`text-sm transition-transform duration-200 ${
@@ -470,14 +470,14 @@ const Navbar = () => {
 
               <Link
                 to="/blog"
-                className="text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-2 py-1 rounded-lg hover:bg-purple-50"
+                className="text-xs md:text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-1 md:px-2 py-1 rounded-lg hover:bg-purple-50"
               >
                 Blog
               </Link>
 
               <Link
                 to="/contact"
-                className="text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-2 py-1 rounded-lg hover:bg-purple-50"
+                className="text-xs md:text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors px-1 md:px-2 py-1 rounded-lg hover:bg-purple-50"
               >
                 Contact
               </Link>
