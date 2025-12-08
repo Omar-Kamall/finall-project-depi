@@ -42,7 +42,7 @@ const LoginForm = () => {
         navigate("/");
       }
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Login failed. Please try again.");
+      setError(err.message || "Login failed. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -93,7 +93,7 @@ const LoginForm = () => {
               className="mt-1 text-sm text-red-600 font-medium"
             />
           </div>
-
+          
           {/* Password Field */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
