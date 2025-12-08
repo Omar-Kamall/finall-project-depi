@@ -148,10 +148,6 @@ const Dashboard = () => {
   };
 
 
-  if (user.role !== "admin" || user.role !== "saller") {
-    navigate("/");
-    return;
-  }
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
