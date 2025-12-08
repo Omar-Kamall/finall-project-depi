@@ -30,7 +30,7 @@ const LoginForm = () => {
       localStorage.setItem("user" , JSON.stringify(res.user));
       localStorage.setItem("token" , res.token);
 
-      window.location.href = "/";
+      res.user.role === "admin" || res.user.role === "saller" ? window.location.href = "/dashboard" : window.location.href = "/";
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
     } finally {
