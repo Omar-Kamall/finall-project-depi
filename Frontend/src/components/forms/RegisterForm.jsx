@@ -19,7 +19,7 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Please confirm your password"),
   role: Yup.string()
-    .oneOf(["user", "seller"], "Invalid role")
+    .oneOf(["user", "saller"], "Invalid role")
     .required("Please select a role"),
   agreeTerms: Yup.boolean().oneOf(
     [true],
