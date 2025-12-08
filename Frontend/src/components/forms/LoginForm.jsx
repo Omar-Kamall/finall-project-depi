@@ -56,7 +56,7 @@ const LoginForm = () => {
         navigate("/");
       }
     } catch (err) {
-      setError(err.message || "Login failed. Please try again.");
+      setError(err?.message || "Login failed. Please try again.");
     } finally {
       setSubmitting(false);
     }
