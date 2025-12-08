@@ -8,21 +8,12 @@ import { register } from "../../api/auth";
 const validationSchema = Yup.object({
   username: Yup.string()
     .min(3, "Username must be at least 3 characters")
-    .max(20, "Username must not exceed 20 characters")
-    .matches(
-      /^[a-zA-Z0-9_-]+$/,
-      "Username can only contain letters, numbers, hyphens, and underscores"
-    )
     .required("Username is required"),
   email: Yup.string()
     .email("Please enter a valid email format (example: user@domain.com)")
     .required("Email is required"),
   password: Yup.string()
     .min(6, "Password must be at least 6 characters long")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-    )
     .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
@@ -39,12 +30,10 @@ const validationSchema = Yup.object({
 const RegisterForm = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [errorType, setErrorType] = useState("");
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       setError("");
-      setErrorType("");
 
       const res = await register({
         name: values.username,
@@ -58,14 +47,18 @@ const RegisterForm = () => {
 
       if (!res || !res.user) {
         setError("Invalid response from server. Please try again.");
-        setErrorType("server");
         setSubmitting(false);
         return;
       }
 
       navigate("/account/login");
     } catch (err) {
-      setError(err.message || "Registration failed. Please try again.");
+      console.error("Registration error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Registration failed. Please try again."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -89,27 +82,13 @@ const RegisterForm = () => {
           {/* Server Error Alert */}
           {error && (
             <div
-              className={`rounded-md p-4 text-sm font-medium border ${
-                errorType === "network"
-                  ? "bg-yellow-50 text-yellow-800 border-yellow-200"
-                  : errorType === "auth"
-                  ? "bg-red-50 text-red-800 border-red-200"
-                  : "bg-orange-50 text-orange-800 border-orange-200"
-              }`}
+              className="rounded-md p-4 text-sm font-medium bg-red-50 text-red-800 border border-red-200"
               role="alert"
             >
               <div className="flex items-start gap-3">
-                <span className="text-lg">
-                  {errorType === "network" ? "⚠️" : "❌"}
-                </span>
+                <span className="text-lg">❌</span>
                 <div>
-                  <p className="font-semibold mb-1">
-                    {errorType === "network"
-                      ? "Connection Error"
-                      : errorType === "auth"
-                      ? "Registration Failed"
-                      : "Error"}
-                  </p>
+                  <p className="font-semibold mb-1">Registration Failed</p>
                   <p>{error}</p>
                 </div>
               </div>
@@ -124,32 +103,22 @@ const RegisterForm = () => {
             >
               Username <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
-              <Field
-                type="text"
-                id="username"
-                name="username"
-                className={`w-full px-4 py-2 bg-white border rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition ${
-                  errors.username && touched.username
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder="johndoe"
-              />
-              {errors.username && touched.username && (
-                <span className="absolute right-3 top-3 text-red-500 text-lg">
-                  ⚠️
-                </span>
-              )}
-            </div>
+            <Field
+              type="text"
+              id="username"
+              name="username"
+              className={`w-full px-4 py-2 bg-white border rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition ${
+                errors.username && touched.username
+                  ? "border-red-500 bg-red-50"
+                  : "border-gray-300"
+              }`}
+              placeholder="johndoe"
+            />
             <ErrorMessage
               name="username"
               component="div"
-              className="mt-2 text-sm text-red-600 font-medium bg-red-50 p-2 rounded border border-red-200"
+              className="mt-1 text-sm text-red-600 font-medium"
             />
-            <p className="mt-1 text-xs text-gray-500">
-              3-20 characters. Letters, numbers, hyphens, and underscores only.
-            </p>
           </div>
 
           {/* Email Field */}
@@ -160,32 +129,22 @@ const RegisterForm = () => {
             >
               Email address <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
-              <Field
-                type="email"
-                id="email"
-                name="email"
-                className={`w-full px-4 py-2 bg-white border rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition ${
-                  errors.email && touched.email
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder="example@domain.com"
-              />
-              {errors.email && touched.email && (
-                <span className="absolute right-3 top-3 text-red-500 text-lg">
-                  ⚠️
-                </span>
-              )}
-            </div>
+            <Field
+              type="email"
+              id="email"
+              name="email"
+              className={`w-full px-4 py-2 bg-white border rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition ${
+                errors.email && touched.email
+                  ? "border-red-500 bg-red-50"
+                  : "border-gray-300"
+              }`}
+              placeholder="example@domain.com"
+            />
             <ErrorMessage
               name="email"
               component="div"
-              className="mt-2 text-sm text-red-600 font-medium bg-red-50 p-2 rounded border border-red-200"
+              className="mt-1 text-sm text-red-600 font-medium"
             />
-            <p className="mt-1 text-xs text-gray-500">
-              Format: yourname@example.com
-            </p>
           </div>
 
           {/* Password Field */}
@@ -196,38 +155,22 @@ const RegisterForm = () => {
             >
               Password <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
-              <Field
-                type="password"
-                id="password"
-                name="password"
-                className={`w-full px-4 py-2 bg-white border rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition ${
-                  errors.password && touched.password
-                    ? "border-red-500 bg-red-50"
-                    : "border-gray-300"
-                }`}
-                placeholder="Enter a strong password"
-              />
-              {errors.password && touched.password && (
-                <span className="absolute right-3 top-3 text-red-500 text-lg">
-                  ⚠️
-                </span>
-              )}
-            </div>
+            <Field
+              type="password"
+              id="password"
+              name="password"
+              className={`w-full px-4 py-2 bg-white border rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition ${
+                errors.password && touched.password
+                  ? "border-red-500 bg-red-50"
+                  : "border-gray-300"
+              }`}
+              placeholder="Enter your password"
+            />
             <ErrorMessage
               name="password"
               component="div"
-              className="mt-2 text-sm text-red-600 font-medium bg-red-50 p-2 rounded border border-red-200"
+              className="mt-1 text-sm text-red-600 font-medium"
             />
-            <div className="mt-2 text-xs text-gray-600 bg-gray-50 p-2 rounded border border-gray-200">
-              <p className="font-semibold mb-1">✓ Password Requirements:</p>
-              <ul className="list-disc list-inside space-y-1">
-                <li>At least 6 characters</li>
-                <li>At least 1 uppercase letter (A-Z)</li>
-                <li>At least 1 lowercase letter (a-z)</li>
-                <li>At least 1 number (0-9)</li>
-              </ul>
-            </div>
           </div>
 
           {/* Confirm Password Field */}
@@ -238,38 +181,21 @@ const RegisterForm = () => {
             >
               Confirm Password <span className="text-red-500">*</span>
             </label>
-            <div className="relative">
-              <Field
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                className={`w-full px-4 py-2 bg-white border rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition ${
-                  errors.confirmPassword && touched.confirmPassword
-                    ? "border-red-500 bg-red-50"
-                    : values.confirmPassword &&
-                      values.password === values.confirmPassword
-                    ? "border-green-500 bg-green-50"
-                    : "border-gray-300"
-                }`}
-                placeholder="Re-enter your password"
-              />
-              {errors.confirmPassword && touched.confirmPassword && (
-                <span className="absolute right-3 top-3 text-red-500 text-lg">
-                  ⚠️
-                </span>
-              )}
-              {values.confirmPassword &&
-                values.password === values.confirmPassword &&
-                !errors.confirmPassword && (
-                  <span className="absolute right-3 top-3 text-green-500 text-lg">
-                    ✓
-                  </span>
-                )}
-            </div>
+            <Field
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              className={`w-full px-4 py-2 bg-white border rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition ${
+                errors.confirmPassword && touched.confirmPassword
+                  ? "border-red-500 bg-red-50"
+                  : "border-gray-300"
+              }`}
+              placeholder="Re-enter your password"
+            />
             <ErrorMessage
               name="confirmPassword"
               component="div"
-              className="mt-2 text-sm text-red-600 font-medium bg-red-50 p-2 rounded border border-red-200"
+              className="mt-1 text-sm text-red-600 font-medium"
             />
           </div>
 
@@ -352,7 +278,7 @@ const RegisterForm = () => {
           <ErrorMessage
             name="agreeTerms"
             component="div"
-            className="text-sm text-red-600 font-medium bg-red-50 p-2 rounded border border-red-200"
+            className="text-sm text-red-600 font-medium"
           />
 
           {/* Submit Button */}
