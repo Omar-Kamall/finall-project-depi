@@ -166,7 +166,7 @@ const ProductDetails = () => {
                       viewBox="0 0 20 20"
                       fill="currentColor"
                       className={`h-4 w-4 ${
-                        i < Math.round(product.rating?.rate ?? 0)
+                        i < Math.round(product.rating?.rate ?? 5)
                           ? "opacity-100"
                           : "opacity-30"
                       }`}
