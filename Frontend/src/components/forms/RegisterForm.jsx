@@ -36,7 +36,7 @@ const RegisterForm = () => {
       });
       navigate("/account/login");
     } catch (err) {
-      setError(err.message || "Registration failed. Please try again.");
+      setError(err?.data?.message || "Registration failed. Please try again.");
     } finally {
       setSubmitting(false);
     }

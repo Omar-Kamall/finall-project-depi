@@ -32,7 +32,7 @@ const LoginForm = () => {
 
       res.user.role === "admin" || res.user.role === "saller" ? window.location.href = "/dashboard" : window.location.href = "/";
     } catch (err) {
-      setError(err.message || "Login failed. Please try again.");
+      setError(err?.message || "Login failed. Please try again.");
     } finally {
       setSubmitting(false);
     }

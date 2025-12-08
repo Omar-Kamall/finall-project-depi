@@ -38,10 +38,9 @@ export const register = async ({ name, email, password, city , phone , address ,
     });
     return res.data;
   } catch (error) {
-    throw new Error(error.res.message);
+    throw new Error(error.response?.data?.message);
   }
 };
-
 
 
 
@@ -59,7 +58,7 @@ export const login = async ({ email, password }) => {
 
     return res.data;
   } catch (error) {
-    throw new Error(error.res.message);
+    throw new Error(error.response?.data?.message);
   }
 };
 
@@ -77,6 +76,6 @@ export const updateProfile = async (updatedData) => {
     const res = await authApi.put(`/updateProfile/${updatedData.email}`, updatedData);
     return res.data;
   } catch (error) {
-    throw new Error(error.res.message);
+    throw new Error(error.response?.data?.message);
   }
 };

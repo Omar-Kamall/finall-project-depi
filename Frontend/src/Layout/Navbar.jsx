@@ -383,14 +383,14 @@ const Navbar = () => {
               </Link>
             ) : (
               <>
-                <Link
+                {/* <Link
                   to="/wishlist"
                   className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <Badge badgeContent={0} color="error">
                     <HiOutlineHeart className="text-xl text-gray-700" />
                   </Badge>
-                </Link>
+                </Link> */}
 
                 <Link
                   to="/cart"
