@@ -10,4 +10,4 @@ const contactModel = new schema(
   { versionKey: false }
 );
 
-module.exports = mongoose.model("conatct", contactModel);
+module.exports = mongoose.model("contact", contactModel);
