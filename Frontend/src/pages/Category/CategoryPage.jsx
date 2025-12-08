@@ -295,13 +295,11 @@ const CategoryPage = () => {
               {displayedProducts.map((product) => (
                 <Card
                   key={product._id}
-                  id={product._id}
+                  productId={product._id}
                   imageSrc={product.image}
                   title={product.title}
                   price={product.price}
                   oldPrice={product.oldPrice}
-                  reviewCount={product.count}
-                  inStock={true}
                 />
               ))}
             </div>
