@@ -166,7 +166,7 @@ const ProductDetails = () => {
                       viewBox="0 0 20 20"
                       fill="currentColor"
                       className={`h-4 w-4 ${
-                        i < Math.round(product.rating?.rate ?? 0)
+                        i < Math.round(product.rating?.rate ?? 5)
                           ? "opacity-100"
                           : "opacity-30"
                       }`}
@@ -206,7 +206,7 @@ const ProductDetails = () => {
               {/* Offer strip */}
               {product.oldPrice !== 0 && (
                 <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-                  {product.oldPrice}
+                  Now you can have it for ${product.price.toFixed(2)} instead of ${product.oldPrice.toFixed(2)}
                 </div>
               )}
 
