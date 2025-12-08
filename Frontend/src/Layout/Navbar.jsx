@@ -330,7 +330,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Right Section - Account, Wishlist, Cart (Desktop Only) */}
+          {/* Right Section - Account, Cart (Desktop Only) */}
           <div className="hidden md:flex items-center gap-4 shrink-0">
             {/* Account/Sign In */}
             {isAuthenticated ? (
@@ -383,15 +383,6 @@ const Navbar = () => {
               </Link>
             ) : (
               <>
-                <Link
-                  to="/wishlist"
-                  className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <Badge badgeContent={0} color="error">
-                    <HiOutlineHeart className="text-xl text-gray-700" />
-                  </Badge>
-                </Link>
-
                 <Link
                   to="/cart"
                   className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -506,13 +497,6 @@ const Navbar = () => {
             </Link>
           ) : (
             <>
-              <Link
-                to="/wishlist"
-                className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity"
-              >
-                <HiOutlineHeart className="text-xl text-gray-700" />
-                <span className="text-xs text-gray-600 mt-1">Wishlist</span>
-              </Link>
               <Link
                 to="/cart"
                 className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity relative"
