@@ -98,10 +98,12 @@ const Hero = () => {
                 Featured Product
               </span>
               <h1 className="text-2xl font-bold text-white mb-2 line-clamp-2">
-                {product.title}
+                <Link to={`/product/${product._id}`} className="hover:text-purple-600 transition-colors">
+                  {product.title}
+                </Link>
               </h1>
               <div className="flex items-baseline gap-2 mb-4">
-                <span className="text-3xl font-bold text-white">
+                <span className="text-3xl font-bold text-purple-200">
                   ${product.price.toFixed(2)}
                 </span>
               </div>
@@ -137,7 +139,9 @@ const Hero = () => {
               Featured Product
             </span>
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight line-clamp-2">
-              {product.title}
+              <Link to={`/product/${product._id}`} className="hover:text-purple-800 transition-colors">
+                {product.title}
+              </Link>
             </h1>
             <p className="text-gray-600 text-lg mb-6 line-clamp-2">
               {product.description ||
