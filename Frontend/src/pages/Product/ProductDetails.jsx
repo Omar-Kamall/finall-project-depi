@@ -216,8 +216,9 @@ const ProductDetails = () => {
                   <button
                     type="button"
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
-                    className="px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors active:bg-gray-100"
+                    className="px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     aria-label="Decrease quantity"
+                    disabled={qty <= 1}
                   >
                     -
                   </button>
@@ -226,9 +227,10 @@ const ProductDetails = () => {
                   </span>
                   <button
                     type="button"
-                    onClick={() => setQty((q) => q + 1)}
-                    className="px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors active:bg-gray-100"
+                    onClick={ () => setQty((q) => q + 1 <= product.count ? q + 1 : q)}
+                    className="px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     aria-label="Increase quantity"
+                    disabled={qty  >= product.count}
                   >
                     +
                   </button>
