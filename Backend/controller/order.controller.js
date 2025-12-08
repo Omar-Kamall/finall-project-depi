@@ -7,10 +7,16 @@ exports.getOrder = async (req, res) => {
   try {
     // get user id with jwt middleware
     const userId = req.user?._id;
+    const role = req.user?.role;
 
     if (!userId) return res.status(403).send("Login Required");
+    let order;
 
-    const order = await orderModel.find({ createdBy: userId });
+    if(role !== "admin") {
+      order = await orderModel.find({ createdBy: userId });
+    }
+
+    order = await orderModel.find();
 
     // check list order
     if (!order) return res.status(403).send("Product Not Found");
