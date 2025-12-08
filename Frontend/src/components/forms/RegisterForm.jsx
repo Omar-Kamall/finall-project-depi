@@ -77,7 +77,7 @@ const RegisterForm = () => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ isSubmitting, errors, touched, values }) => (
+      {({ isSubmitting, errors, touched }) => (
         <Form className="space-y-6">
           {/* Server Error Alert */}
           {error && (
