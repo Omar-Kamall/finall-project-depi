@@ -32,7 +32,7 @@ exports.postContacts = async (req, res) => {
     await transporter.sendMail({
       from: `My Website <omarkamall.dev@gmail.com>`,
       replyTo: `${req.body.name} <${req.body.email}>`,
-      to: "omarkamall.dev@gmail.com",
+      to: req.body.email,
       subject: `${req.body.subject}`,
       html: `<b>${req.body.message}</b>`,
     });
