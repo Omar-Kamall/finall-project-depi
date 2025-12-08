@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
-const schema = mongoose.Schema;
+const mongoose = require("mongoose");                 // Import mongoose
+const schema = mongoose.Schema;                       // Shortcut for Schema
 
-const contactModel = new schema(
+const contactModel = new schema(                      // Define Contact schema
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true },
-    message: { type: String, required: true },
+    name: { type: String, required: true },           // Sender name
+    email: { type: String, required: true },          // Sender email
+    message: { type: String, required: true },        // Message content
   },
-  { versionKey: false }
+  { versionKey: false }                               // Disable __v field
 );
 
-module.exports = mongoose.model("contact", contactModel);
+module.exports = mongoose.model("contact", contactModel); // Export Contact model

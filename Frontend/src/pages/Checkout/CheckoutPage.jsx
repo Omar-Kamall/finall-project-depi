@@ -68,7 +68,7 @@ const CheckoutPage = () => {
     city: formData.city,
     address: {
       street: formData.streetAddress,
-      apartment: formData.apartment,
+      apartment: formData.apartment ? formData.apartment : "N/A",
     },
     email: formData.email || user.email ,
     phone: formData.phone,
