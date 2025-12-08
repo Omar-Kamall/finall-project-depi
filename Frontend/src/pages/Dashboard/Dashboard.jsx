@@ -10,11 +10,12 @@ import {
   postProduct,
   updateProduct,
 } from "../../api/Products";
+import { useUser } from "../../context/UserContext";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { success, error: showError } = useToast();
-
+  const { user } = useUser();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -146,6 +147,11 @@ const Dashboard = () => {
     setShowDeleteConfirm(null);
   };
 
+
+  if (user.role !== "admin" || user.role !== "saller") {
+    navigate("/");
+    return;
+  }
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
