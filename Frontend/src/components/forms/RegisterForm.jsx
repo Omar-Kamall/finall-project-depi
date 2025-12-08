@@ -228,7 +228,7 @@ const RegisterForm = () => {
                   type="radio"
                   id="vendor"
                   name="role"
-                  value="seller"
+                  value="saller"
                   className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 cursor-pointer"
                 />
                 <label
