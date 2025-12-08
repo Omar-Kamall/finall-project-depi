@@ -319,6 +319,7 @@ const ProductDetails = () => {
                   imageSrc={p.image}
                   title={p.title}
                   price={p.price}
+                  oldPrice={p.oldPrice}
                   reviewCount={p.count}
                 />
               ))}
