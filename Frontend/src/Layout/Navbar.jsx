@@ -46,6 +46,7 @@ const Navbar = () => {
     logout();
     setUser(null);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setShowDropdown(false);
     window.location.href = "/account/login";
   };
