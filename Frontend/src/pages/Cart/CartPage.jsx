@@ -191,7 +191,12 @@ const CartPage = () => {
                                   ),
                                 })
                               }
+<<<<<<< HEAD
+                              disabled={(item.quantity || 1) <= 1}
                               className="cursor-pointer px-3 py-1 text-gray-600 hover:bg-gray-100 transition-all duration-200 active:bg-gray-200 active:scale-95"
+=======
+                              className="cursor-pointer px-3 py-1 text-gray-600 hover:bg-gray-100 transition-all duration-200 active:bg-gray-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+>>>>>>> 2ba228b642089c3bfa701453720f66559cc67880
                               aria-label="Decrease quantity"
                               disabled={(item.quantity || 1) <= 1}
                             >
@@ -210,10 +215,22 @@ const CartPage = () => {
                                 );
                                 handleQuantityChange({
                                   ...item,
+<<<<<<< HEAD
                                   quantity: (item.quantity || 1) + 1,
-                              })
+                                })
                               }
+                              disabled={(item.quantity || 1) >= item.count}
                               className="cursor-pointer px-3 py-1 text-gray-600 hover:bg-gray-100 transition-all duration-200 active:bg-gray-200 active:scale-95"
+=======
+                                  quantity: newQuantity,
+                                });
+                              }}
+                              disabled={
+                                productCounts[item.productId] !== undefined &&
+                                item.quantity >= productCounts[item.productId]
+                              }
+                              className="cursor-pointer px-3 py-1 text-gray-600 hover:bg-gray-100 transition-all duration-200 active:bg-gray-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+>>>>>>> 2ba228b642089c3bfa701453720f66559cc67880
                               aria-label="Increase quantity"
                             >
                               +
