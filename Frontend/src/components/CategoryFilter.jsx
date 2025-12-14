@@ -60,7 +60,7 @@ const CategoryFilter = ({ products = [], onApply }) => {
     if (typeof onApply === "function") {
       const lo = clampNumber(minPrice, minPriceBound, maxPriceBound);
       const hi = clampNumber(maxPrice, minPriceBound, maxPriceBound);
-      onApply({ minPrice: Math.min(lo, hi), maxPrice: Math.max(lo, hi) });
+      onApply({ minPrice: lo > hi ? 0 : lo , maxPrice: hi });
     }
   };
 
