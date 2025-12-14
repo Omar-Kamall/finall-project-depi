@@ -45,11 +45,16 @@ const Card = ({
       title: title,
       image: imageSrc,
       quantity: 1,
+      count: reviewCount,
     };
 
     try {
-      await addToCart(productData);
-      success(`${title} added to cart!`);
+      const add = await addToCart(productData);
+
+      if(add)
+        success(`${title} added to cart!`);
+      else
+        showError("Quantity is less than the minimum allowed");
     } catch {
       showError("Failed to add item to cart. Please try again.");
     } finally {

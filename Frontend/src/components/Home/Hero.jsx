@@ -50,11 +50,16 @@ const Hero = () => {
       title: product.title,
       image: product.image,
       quantity: 1,
+      count: product.count,
     };
     setAdding(true);
     try {
-      await addToCart(productData);
-      success(`${product.title} added to cart!`);
+      const add = await addToCart(productData);
+
+      if(add)
+        success(`${product.title} added to cart!`);
+      else
+        showError("Quantity is less than the minimum allowed");
     } catch {
       showError("Failed to add item to cart. Please try again.");
     } finally {

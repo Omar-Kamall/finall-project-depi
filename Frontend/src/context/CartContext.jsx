@@ -1,11 +1,10 @@
 import { createContext, useContext, useState } from "react";
-import {
-  // getCartItems,
-  // addCart,
-  // clearCart,
-  // removeProductFromCart,
-  // updateCartQuantity,
-} from "../api/cart";
+import // getCartItems,
+// addCart,
+// clearCart,
+// removeProductFromCart,
+// updateCartQuantity,
+"../api/cart";
 import { useUser } from "./UserContext";
 
 const CartContext = createContext();
@@ -13,7 +12,6 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const { user } = useUser();
-
 
   const addToCart = async (product) => {
     if (user.role === "user") {
@@ -23,6 +21,10 @@ export const CartProvider = ({ children }) => {
       if (findProduct) {
         const newQuantity =
           Number(findProduct.quantity || 0) + Number(product.quantity || 1);
+
+        if (newQuantity > Number(findProduct.count)) {
+          return false;
+        }
         setCartItems(
           cartItems.map((item) =>
             item.productId === product.productId
@@ -30,10 +32,12 @@ export const CartProvider = ({ children }) => {
               : item
           )
         );
+        return true;
 
         // await updateCartQuantity({...product , quantity: newQuantity});
       } else {
         setCartItems([...cartItems, product]);
+        return true;
         // await addCart(product);
       }
     }
@@ -60,16 +64,20 @@ export const CartProvider = ({ children }) => {
       const findProduct = cartItems.find(
         (item) => item.productId === product.productId
       );
-      if (!findProduct) return "Product Not Found";
+      if (!findProduct) return false;
 
-      setCartItems(
-        cartItems.map((item) =>
-          item.productId === product.productId
-            ? { ...item, quantity: product.quantity }
-            : item
-        )
-      );
-      // await updateCartQuantity(product);
+      if (product.quantity <= product.count) {
+        setCartItems(
+          cartItems.map((item) =>
+            item.productId === product.productId
+              ? { ...item, quantity: product.quantity }
+              : item
+          )
+        );
+        // await updateCartQuantity(product);
+        return true;
+      }
+      return false;
     }
   };
 

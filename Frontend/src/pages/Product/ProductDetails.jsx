@@ -193,7 +193,7 @@ const ProductDetails = () => {
                     <span className="text-base text-gray-400 line-through">
                       ${product.oldPrice.toFixed(2)}
                     </span>
-                )}
+                  )}
               </div>
 
               {/* Category badge */}
@@ -206,7 +206,8 @@ const ProductDetails = () => {
               {/* Offer strip */}
               {product.oldPrice !== 0 && (
                 <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
-                  Now you can have it for ${product.price.toFixed(2)} instead of ${product.oldPrice.toFixed(2)}
+                  Now you can have it for ${product.price.toFixed(2)} instead of
+                  ${product.oldPrice.toFixed(2)}
                 </div>
               )}
 
@@ -227,10 +228,12 @@ const ProductDetails = () => {
                   </span>
                   <button
                     type="button"
-                    onClick={ () => setQty((q) => q + 1 <= product.count ? q + 1 : q)}
+                    onClick={() =>
+                      setQty((q) => (q + 1 <= product.count ? q + 1 : q))
+                    }
                     className="px-3 py-2 text-gray-700 hover:bg-gray-50 transition-colors active:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     aria-label="Increase quantity"
-                    disabled={qty  >= product.count}
+                    disabled={qty >= product.count}
                   >
                     +
                   </button>
@@ -240,9 +243,17 @@ const ProductDetails = () => {
                   onClick={async () => {
                     setAdding(true);
                     try {
-                      if(user?.role !== "user") return showError("User Only Can Add To Cart");
-                      await addToCart({ ...product , productId: product._id , quantity: Number(qty) || 1 });
-                      success(`${product.title} added to cart!`);
+                      if (user?.role !== "user")
+                        return showError("User Only Can Add To Cart");
+                      const add = await addToCart({
+                        ...product,
+                        productId: product._id,
+                        quantity: Number(qty) || 1,
+                      });
+
+                      if (add) success(`${product.title} added to cart!`);
+                      else
+                        showError("Quantity is less than the minimum allowed");
                     } catch {
                       showError("Failed to add to cart. Please try again.");
                     } finally {
@@ -259,9 +270,18 @@ const ProductDetails = () => {
                   onClick={async () => {
                     setAdding(true);
                     try {
-                      if(user?.role !== "user") return showError("User Only Can Add To Cart");
-                      await addToCart({ ...product , productId: product._id , quantity: Number(qty) || 1 });
-                      navigate("/cart");
+                      if (user?.role !== "user")
+                        return showError("User Only Can Add To Cart");
+                      const add = await addToCart({
+                        ...product,
+                        productId: product._id,
+                        quantity: Number(qty) || 1,
+                      });
+                      if (add) {
+                        success(`${product.title} added to cart!`);
+                        navigate("/cart");
+                      } else
+                        showError("Quantity is less than the minimum allowed");
                     } catch {
                       showError("Failed to add to cart. Please try again.");
                     } finally {

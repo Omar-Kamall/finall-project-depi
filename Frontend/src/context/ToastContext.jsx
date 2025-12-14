@@ -15,7 +15,7 @@ export const useToast = () => {
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
-  const showToast = useCallback((message, type = "success", duration = 3000) => {
+  const showToast = useCallback((message, type = "success", duration = 1000) => {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, message, type, duration }]);
     return id;
