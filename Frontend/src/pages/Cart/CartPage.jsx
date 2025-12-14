@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { getProductById } from "../../api/Products";
 import { useToast } from "../../context/ToastContext";
 import EmptyCart from "../../Imgs/EmptyCart.svg";
 
@@ -9,6 +10,7 @@ const CartPage = () => {
   const isAuthenticated = localStorage.getItem("token");
   const { success } = useToast();
   const navigate = useNavigate();
+  const [productCounts, setProductCounts] = useState({}); // Store productId -> count mapping
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -16,6 +18,28 @@ const CartPage = () => {
       navigate("/account/login");
     }
   }, [isAuthenticated, navigate]);
+
+  // Fetch product counts for all cart items on mount and when cartItems change
+  useEffect(() => {
+    const fetchProductCounts = async () => {
+      const counts = {};
+      const promises = cartItems.map(async (item) => {
+        try {
+          const res = await getProductById(item.productId);
+          counts[item.productId] = res.data.count;
+        } catch (err) {
+          console.error(`Error fetching count for product ${item.productId}:`, err);
+          counts[item.productId] = Infinity; // Default to unlimited if fetch fails
+        }
+      });
+      await Promise.all(promises);
+      setProductCounts(counts);
+    };
+
+    if (cartItems.length > 0) {
+      fetchProductCounts();
+    }
+  }, [cartItems]);
 
   // Don't render anything while checking auth or if not authenticated
   if (!isAuthenticated) {
@@ -167,9 +191,9 @@ const CartPage = () => {
                                   ),
                                 })
                               }
-                              disabled={(item.quantity || 1) <= 1}
                               className="cursor-pointer px-3 py-1 text-gray-600 hover:bg-gray-100 transition-all duration-200 active:bg-gray-200 active:scale-95"
                               aria-label="Decrease quantity"
+                              disabled={(item.quantity || 1) <= 1}
                             >
                               -
                             </button>
@@ -178,13 +202,17 @@ const CartPage = () => {
                             </span>
                             <button
                               type="button"
-                              onClick={() =>
+                              onClick={() => {
+                                const maxCount = productCounts[item.productId] ?? Infinity;
+                                const newQuantity = Math.min(
+                                  maxCount,
+                                  (item.quantity || 1) + 1
+                                );
                                 handleQuantityChange({
                                   ...item,
                                   quantity: (item.quantity || 1) + 1,
-                                })
+                              })
                               }
-                              disabled={(item.quantity || 1) >= item.count}
                               className="cursor-pointer px-3 py-1 text-gray-600 hover:bg-gray-100 transition-all duration-200 active:bg-gray-200 active:scale-95"
                               aria-label="Increase quantity"
                             >
