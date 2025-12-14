@@ -68,14 +68,19 @@ exports.postOrder = async (req, res) => {
       if (!product)
         return res.status(400).json({ message: `Product not found` });
 
-      if (product.stock < item.quantity)
+      if (product.count < item.quantity)
         return res.status(400).json({
           message: `Not enough stock for ${product.name}`,
         });
 
-      // reduce stock
-      product.stock -= item.quantity;
-      await product.save();
+
+      // reduce count
+      product.count -= item.quantity;
+      if (product.count <= 0) {
+        await productModel.deleteOne({ _id: product._id });
+      } else {
+        await product.save();
+      }
 
       const total = product.price * item.quantity;
       grandTotal += total;
