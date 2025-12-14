@@ -391,7 +391,7 @@ const Navbar = () => {
                   to="/wishlist"
                   className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
-                  <Badge badgeContent={lengthWishlistItems} color="error">
+                  <Badge badgeContent={lengthWishlistItems} color="secondary">
                     <HiOutlineHeart className="text-xl text-gray-700" />
                   </Badge>
                 </Link>
@@ -527,7 +527,7 @@ const Navbar = () => {
                   to="/wishlist"
                   className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity relative"
                 >
-                  <Badge badgeContent={lengthWishlistItems} color="error">
+                  <Badge badgeContent={lengthWishlistItems} color="secondary">
                     <HiOutlineHeart className="text-xl text-gray-700" />
                   </Badge>
                   <span className="text-xs text-gray-600 mt-1">WishList</span>
