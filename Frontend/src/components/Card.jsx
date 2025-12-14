@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 import { useToast } from "../context/ToastContext";
 import { useUser } from "../context/UserContext";
 
@@ -16,12 +17,15 @@ const Card = ({
 }) => {
   const { user } = useUser();
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const isAuthenticated = localStorage.getItem("token");
   const { success, error: showError } = useToast();
   const navigate = useNavigate();
   const [adding, setAdding] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const discount = ((oldPrice - price) / oldPrice) * 100 || 0;
+  
+  const isWishlisted = isInWishlist(productId);
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -69,17 +73,57 @@ const Card = ({
       {/* Wishlist icon */}
       <button
         type="button"
-        aria-label="Add to wishlist"
-        className="absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm text-gray-600 shadow-lg transition-all hover:text-rose-600 hover:scale-110"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (!productId) return;
+          
+          const productData = {
+            productId,
+            price: price,
+            title: title,
+            image: imageSrc,
+          };
+          
+          const added = toggleWishlist(productData);
+          if (added) {
+            success(`${title} added to wishlist!`);
+          } else {
+            success(`${title} removed from wishlist`);
+          }
+        }}
+        aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        className={`absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm shadow-lg transition-all hover:scale-110 ${
+          isWishlisted
+            ? "text-rose-600"
+            : "text-gray-600 hover:text-rose-600"
+        }`}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="h-5 w-5"
-        >
-          <path d="M11.645 20.91l-.007-.003-.023-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.593 2.25 9.318 2.25 6.75 4.3 4.5 6.9 4.5c1.54 0 3.04.74 4.1 1.924C12.06 5.24 13.56 4.5 15.1 4.5c2.6 0 4.65 2.25 4.65 4.818 0 3.275-2.438 6.043-4.738 8.19a25.232 25.232 0 01-4.244 3.17 15.247 15.247 0 01-.383.218l-.023.012-.007.003-.003.002a.75.75 0 01-.694 0l-.003-.002z" />
-        </svg>
+        {isWishlisted ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="h-5 w-5"
+          >
+            <path d="M11.645 20.91l-.007-.003-.023-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.593 2.25 9.318 2.25 6.75 4.3 4.5 6.9 4.5c1.54 0 3.04.74 4.1 1.924C12.06 5.24 13.56 4.5 15.1 4.5c2.6 0 4.65 2.25 4.65 4.818 0 3.275-2.438 6.043-4.738 8.19a25.232 25.232 0 01-4.244 3.17 15.247 15.247 0 01-.383.218l-.023.012-.007.003-.003.002a.75.75 0 01-.694 0l-.003-.002z" />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="h-5 w-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+            />
+          </svg>
+        )}
       </button>
 
       {/* Image */}
