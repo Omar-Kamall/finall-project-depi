@@ -119,7 +119,7 @@ const CartPage = () => {
                 Shopping Cart
               </h1>
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200">
-                {cartItems.map((item , index) => (
+                {cartItems.map((item, index) => (
                   <div
                     key={item.productId || index}
                     className="p-6 flex flex-col sm:flex-row gap-4"
@@ -185,8 +185,11 @@ const CartPage = () => {
                               onClick={() =>
                                 handleQuantityChange({
                                   ...item,
-                                  quantity: Math.max(1, (item.quantity || 1) - 1),
-                              })
+                                  quantity: Math.max(
+                                    1,
+                                    (item.quantity || 1) - 1
+                                  ),
+                                })
                               }
                               className="cursor-pointer px-3 py-1 text-gray-600 hover:bg-gray-100 transition-all duration-200 active:bg-gray-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                               aria-label="Decrease quantity"

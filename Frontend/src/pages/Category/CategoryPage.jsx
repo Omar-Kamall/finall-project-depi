@@ -300,6 +300,7 @@ const CategoryPage = () => {
                   title={product.title}
                   price={product.price}
                   oldPrice={product.oldPrice}
+                  reviewCount={product.count}
                 />
               ))}
             </div>

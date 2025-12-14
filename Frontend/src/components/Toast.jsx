@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { HiCheckCircle, HiXCircle, HiInformationCircle, HiX } from "react-icons/hi";
 
-const Toast = ({ message, type = "success", onClose, duration = 3000 }) => {
+const Toast = ({ message, type = "success", onClose, duration = 1000 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
