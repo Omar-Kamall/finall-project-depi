@@ -494,7 +494,7 @@ const Navbar = () => {
             className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity"
           >
             <HiOutlineUser className="text-xl text-gray-700" />
-            <span className="text-xs text-gray-600 mt-1">{user?.name}</span>
+            <span className="text-xs text-gray-600 mt-1">{user?.name || "Account"}</span>
           </Link>
           {user?.role === "admin" || user?.role === "saller" ? (
             location.pathname !== "/dashboard" && <Link
