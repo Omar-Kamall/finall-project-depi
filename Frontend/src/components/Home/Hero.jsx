@@ -76,9 +76,9 @@ const Hero = () => {
   return (
     <section className="bg-white py-8 lg:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-6 lg:gap-10 items-center">
           {/* Mobile: Image with overlay content */}
-          <div className="lg:hidden relative rounded-2xl overflow-hidden shadow-xl">
+          <div className="lg:hidden md:hidden relative rounded-2xl overflow-hidden shadow-xl">
             <Link to={`/product/${product._id}`} className="block group">
               <div className="relative bg-linear-to-br from-gray-50 to-gray-100 aspect-square">
                 <img
@@ -139,7 +139,7 @@ const Hero = () => {
           </div>
 
           {/* Desktop: Left Section - Product Details */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block md:block">
             <span className="inline-block bg-purple-100 text-purple-700 px-4 py-1.5 rounded-full text-xs font-semibold mb-4">
               Featured Product
             </span>
@@ -194,7 +194,7 @@ const Hero = () => {
           </div>
 
           {/* Desktop: Right Section - Product Image */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:block md:block">
             <Link to={`/product/${product._id}`} className="block group">
               <div className="relative bg-linear-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden shadow-xl p-8 lg:p-12">
                 <div className="relative aspect-square w-90 h-90 max-w-md mx-auto">

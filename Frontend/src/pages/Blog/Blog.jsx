@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import blogData from './blogData.json';
-import groceryImage from '../../Imgs/posts/grocers.png';
-import fridayImage from '../../Imgs/posts/friday.png';
-import dunhumbyImage from '../../Imgs/posts/dunnhumby.png';
-import sustainableImage from '../../Imgs/posts/sustainable.png';
-import mealKitImage from '../../Imgs/posts/meal-kit.png';
-import organicImage from '../../Imgs/posts/organic.png';
-import sourcingImage from '../../Imgs/posts/sourcing.png';
-import smartShoppingImage from '../../Imgs/posts/smart-shopping.png';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import blogData from "./blogData.json";
+import groceryImage from "../../Imgs/posts/grocers.png";
+import fridayImage from "../../Imgs/posts/friday.png";
+import dunhumbyImage from "../../Imgs/posts/dunnhumby.png";
+import sustainableImage from "../../Imgs/posts/sustainable.png";
+import mealKitImage from "../../Imgs/posts/meal-kit.png";
+import organicImage from "../../Imgs/posts/organic.png";
+import sourcingImage from "../../Imgs/posts/sourcing.png";
+import smartShoppingImage from "../../Imgs/posts/smart-shopping.png";
 
 // Image mapping - maps image names from JSON to imported images
 const imageMap = {
-  'grocers.png': groceryImage,
-  'friday.png': fridayImage,
-  'dunnhumby.png': dunhumbyImage,
-  'sustainable.png': sustainableImage,
-  'meal-kit.png': mealKitImage,
-  'organic.png': organicImage,
-  'sourcing.png': sourcingImage,
-  'smart-shopping.png': smartShoppingImage,
+  "grocers.png": groceryImage,
+  "friday.png": fridayImage,
+  "dunnhumby.png": dunhumbyImage,
+  "sustainable.png": sustainableImage,
+  "meal-kit.png": mealKitImage,
+  "organic.png": organicImage,
+  "sourcing.png": sourcingImage,
+  "smart-shopping.png": smartShoppingImage,
 };
 
 const Blog = () => {
@@ -75,30 +75,34 @@ const Blog = () => {
             >
               {/* Post Image */}
               {post.image && imageMap[post.image] ? (
-                <div className="w-full h-64 bg-gray-100 overflow-hidden">
-                  <img
-                    src={imageMap[post.image]}
-                    alt={post.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-64 bg-linear-to-br from-gray-100 to-gray-50 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-16 h-16 text-gray-400"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                <Link to={`/blog/${post.id}`}>
+                  <div className="w-full h-64 bg-gray-100 overflow-hidden">
+                    <img
+                      src={imageMap[post.image]}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
                     />
-                  </svg>
-                </div>
+                  </div>
+                </Link>
+              ) : (
+                <Link to={`/blog/${post.id}`}>
+                  <div className="w-full h-64 bg-linear-to-br from-gray-100 to-gray-50 flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-16 h-16 text-gray-400"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                      />
+                    </svg>
+                  </div>
+                </Link>
               )}
 
               {/* Post Content */}
@@ -111,9 +115,11 @@ const Blog = () => {
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl font-bold text-gray-900 hover:text-purple-600 transition-colors">
-                  {post.title}
-                </h2>
+                <Link to={`/blog/${post.id}`}>
+                  <h2 className="text-2xl font-bold text-gray-900 hover:text-purple-600 transition-colors">
+                    {post.title}
+                  </h2>
+                </Link>
 
                 {/* Date and Author */}
                 <div className="flex items-center text-sm text-gray-600">
@@ -150,8 +156,8 @@ const Blog = () => {
                 onClick={() => setCurrentPage(page)}
                 className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                   currentPage === page
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                    ? "bg-purple-600 text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                 }`}
               >
                 {page}
