@@ -179,7 +179,7 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
       <div>
         <label
           htmlFor="title"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-semibold text-gray-700 mb-2"
         >
           Product Title <span className="text-rose-600">*</span>
         </label>
@@ -189,65 +189,119 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
           name="title"
           value={formData.title}
           onChange={handleChange}
-          className={`w-full px-4 py-2.5 rounded-xl border ${
-            errors.title ? "border-rose-500" : "border-gray-300"
+          className={`w-full px-4 py-3 rounded-xl border transition-all ${
+            errors.title ? "border-rose-500 bg-rose-50" : "border-gray-300 bg-white"
           } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
           placeholder="Enter product title"
         />
         {errors.title && (
-          <p className="mt-1 text-sm text-rose-600">{errors.title}</p>
+          <p className="mt-1.5 text-sm text-rose-600 flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+            {errors.title}
+          </p>
         )}
       </div>
 
       {/* Price and Old Price */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label
             htmlFor="price"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-semibold text-gray-700 mb-2"
           >
             Main Price / Price After Discount<span className="text-rose-600">*</span>
           </label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            min="0"
-            step="0.01"
-            className={`w-full px-4 py-2.5 rounded-xl border ${
-              errors.price ? "border-rose-500" : "border-gray-300"
-            } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
-            placeholder="0.00"
-          />
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              min="0"
+              step="0.01"
+              className={`w-full pl-8 pr-4 py-3 rounded-xl border transition-all ${
+                errors.price ? "border-rose-500 bg-rose-50" : "border-gray-300 bg-white"
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+              placeholder="0.00"
+            />
+          </div>
           {errors.price && (
-            <p className="mt-1 text-sm text-rose-600">{errors.price}</p>
+            <p className="mt-1.5 text-sm text-rose-600 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                />
+              </svg>
+              {errors.price}
+            </p>
           )}
         </div>
 
         <div>
           <label
             htmlFor="oldPrice"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-semibold text-gray-700 mb-2"
           >
-            Price Before Discount (optional)
+            Price Before Discount <span className="text-gray-500 text-xs font-normal">(optional)</span>
           </label>
-          <input
-            type="number"
-            id="oldPrice"
-            name="oldPrice"
-            value={formData.oldPrice}
-            onChange={handleChange}
-            min="0"
-            step="0.01"
-            className={`w-full px-4 py-2.5 rounded-xl border ${
-              errors.oldPrice ? "border-rose-500" : "border-gray-300"
-            } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
-            placeholder="0.00"
-          />
+          <div className="relative">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">$</span>
+            <input
+              type="number"
+              id="oldPrice"
+              name="oldPrice"
+              value={formData.oldPrice}
+              onChange={handleChange}
+              min="0"
+              step="0.01"
+              className={`w-full pl-8 pr-4 py-3 rounded-xl border transition-all ${
+                errors.oldPrice ? "border-rose-500 bg-rose-50" : "border-gray-300 bg-white"
+              } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+              placeholder="0.00"
+            />
+          </div>
           {errors.oldPrice && (
-            <p className="mt-1 text-sm text-rose-600">{errors.oldPrice}</p>
+            <p className="mt-1.5 text-sm text-rose-600 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                />
+              </svg>
+              {errors.oldPrice}
+            </p>
           )}
         </div>
       </div>
@@ -256,7 +310,7 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
       <div>
         <label
           htmlFor="category"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-semibold text-gray-700 mb-2"
         >
           Category <span className="text-rose-600">*</span>
         </label>
@@ -265,8 +319,8 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
           name="category"
           value={formData.category}
           onChange={handleChange}
-          className={`w-full px-4 py-2.5 rounded-xl border ${
-            errors.category ? "border-rose-500" : "border-gray-300"
+          className={`w-full px-4 py-3 rounded-xl border transition-all ${
+            errors.category ? "border-rose-500 bg-rose-50" : "border-gray-300 bg-white"
           } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
         >
           <option value="">Select a category</option>
@@ -276,20 +330,40 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
             </option>
           ))}
         </select>
-        <span className="my-1 flex items-center justify-center text-gray-500">OR</span>
+        <div className="my-3 flex items-center gap-3">
+          <div className="flex-1 h-px bg-gray-200"></div>
+          <span className="text-xs font-medium text-gray-500 uppercase">OR</span>
+          <div className="flex-1 h-px bg-gray-200"></div>
+        </div>
         <input
-            type="text"
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className={`w-full px-4 py-2.5 rounded-xl border ${
-              errors.oldPrice ? "border-rose-500" : "border-gray-300"
-            } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
-            placeholder="New Category"
-          />
+          type="text"
+          id="categoryText"
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          className={`w-full px-4 py-3 rounded-xl border transition-all ${
+            errors.category ? "border-rose-500 bg-rose-50" : "border-gray-300 bg-white"
+          } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
+          placeholder="Enter new category name"
+        />
         {errors.category && (
-          <p className="mt-1 text-sm text-rose-600">{errors.category}</p>
+          <p className="mt-1.5 text-sm text-rose-600 flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+            {errors.category}
+          </p>
         )}
       </div>
 
@@ -297,7 +371,7 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-semibold text-gray-700 mb-2"
         >
           Description <span className="text-rose-600">*</span>
         </label>
@@ -306,14 +380,30 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
           name="description"
           value={formData.description}
           onChange={handleChange}
-          rows="4"
-          className={`w-full px-4 py-2.5 rounded-xl border ${
-            errors.description ? "border-rose-500" : "border-gray-300"
+          rows="5"
+          className={`w-full px-4 py-3 rounded-xl border transition-all ${
+            errors.description ? "border-rose-500 bg-rose-50" : "border-gray-300 bg-white"
           } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none`}
-          placeholder="Enter product description"
+          placeholder="Enter detailed product description..."
         />
         {errors.description && (
-          <p className="mt-1 text-sm text-rose-600">{errors.description}</p>
+          <p className="mt-1.5 text-sm text-rose-600 flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+            {errors.description}
+          </p>
         )}
       </div>
 
@@ -321,7 +411,7 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
       <div>
         <label
           htmlFor="image"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-semibold text-gray-700 mb-2"
         >
           Product Image <span className="text-rose-600">*</span>
         </label>
@@ -334,48 +424,73 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
             name="image"
             accept="image/*"
             onChange={handleImageChange}
-            className={`w-full px-4 py-2.5 rounded-xl border ${
-              errors.image ? "border-rose-500" : "border-gray-300"
+            className={`w-full px-4 py-3 rounded-xl border transition-all ${
+              errors.image ? "border-rose-500 bg-rose-50" : "border-gray-300 bg-white"
             } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 file:cursor-pointer`}
           />
         </div>
 
         {errors.image && (
-          <p className="mt-1 text-sm text-rose-600">{errors.image}</p>
+          <p className="mt-1.5 text-sm text-rose-600 flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+            {errors.image}
+          </p>
         )}
 
         {/* Image Preview */}
         {(imagePreview || formData.image) && (
-          <div className="mt-4">
-            <p className="text-sm text-gray-600 mb-2">Image Preview:</p>
+          <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <p className="text-sm font-medium text-gray-700 mb-3">Image Preview:</p>
             <div className="relative inline-block">
               <img
                 src={imagePreview || formData.image}
                 alt="Product preview"
-                className="h-48 w-48 object-contain border border-gray-200 rounded-lg bg-gray-50"
+                className="h-56 w-56 object-contain border-2 border-gray-200 rounded-xl bg-white shadow-sm"
                 onError={(e) => {
                   e.target.style.display = "none";
                 }}
               />
               {imageFile && (
-                <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                <div className="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
                   New
                 </div>
               )}
             </div>
             {imageFile && (
-              <p className="mt-2 text-xs text-gray-500">
-                File: {imageFile.name} (
-                {(imageFile.size / 1024 / 1024).toFixed(2)} MB)
-              </p>
+              <div className="mt-3 p-3 bg-white rounded-lg border border-gray-200">
+                <p className="text-xs font-medium text-gray-700">
+                  <span className="font-semibold">File:</span> {imageFile.name}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Size: {(imageFile.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+              </div>
             )}
           </div>
         )}
 
         {!imagePreview && !formData.image && (
-          <p className="mt-2 text-sm text-gray-500">
-            Accepted formats: JPG, PNG, GIF, WebP (Max size: 10MB)
-          </p>
+          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-xs text-blue-700">
+              <span className="font-semibold">Accepted formats:</span> JPG, PNG, GIF, WebP
+            </p>
+            <p className="text-xs text-blue-600 mt-1">
+              <span className="font-semibold">Max size:</span> 10MB
+            </p>
+          </div>
         )}
       </div>
 
@@ -383,7 +498,7 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
       <div>
         <label
           htmlFor="count"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-semibold text-gray-700 mb-2"
         >
           Stock Count <span className="text-rose-600">*</span>
         </label>
@@ -394,34 +509,106 @@ const ProductForm = ({ product, onSubmit, onCancel, isSubmitting = false }) => {
           value={formData.count}
           onChange={handleChange}
           min="0"
-          className={`w-full px-4 py-2.5 rounded-xl border ${
-            errors.count ? "border-rose-500" : "border-gray-300"
+          className={`w-full px-4 py-3 rounded-xl border transition-all ${
+            errors.count ? "border-rose-500 bg-rose-50" : "border-gray-300 bg-white"
           } focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
           placeholder="0"
         />
         {errors.count && (
-          <p className="mt-1 text-sm text-rose-600">{errors.count}</p>
+          <p className="mt-1.5 text-sm text-rose-600 flex items-center gap-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+            {errors.count}
+          </p>
         )}
       </div>
 
       {/* Form Actions */}
-      <div className="flex gap-3 pt-4">
+      <div className="flex gap-4 pt-6 border-t border-gray-200">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex-1 px-6 py-3 rounded-xl bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 px-6 py-3.5 rounded-xl bg-linear-to-r from-purple-600 to-purple-700 text-white font-semibold hover:from-purple-700 hover:to-purple-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
         >
-          {isSubmitting
-            ? "Saving..."
-            : isEditMode
-            ? "Update Product"
-            : "Add Product"}
+          {isSubmitting ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Saving...
+            </>
+          ) : isEditMode ? (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                />
+              </svg>
+              Update Product
+            </>
+          ) : (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Product
+            </>
+          )}
         </button>
         <button
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="flex-1 px-6 py-3 rounded-xl bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 px-6 py-3.5 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
         >
           Cancel
         </button>
