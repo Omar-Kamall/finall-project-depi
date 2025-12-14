@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import {
-  getCartItems,
+  // getCartItems,
   // addCart,
   // clearCart,
   // removeProductFromCart,
@@ -14,17 +14,6 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const { user } = useUser();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getCartItems();
-        setCartItems(res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const addToCart = async (product) => {
     if (user.role === "user") {
