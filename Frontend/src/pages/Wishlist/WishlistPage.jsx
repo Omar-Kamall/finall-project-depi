@@ -1,13 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
 import { useCart } from "../../context/CartContext";
 import { useToast } from "../../context/ToastContext";
 import EmptyCart from "../../Imgs/EmptyCart.svg";
+import { useEffect } from "react";
 
 const WishlistPage = () => {
   const { wishlistItems, removeFromWishlist } = useWishlist();
   const { addToCart } = useCart();
   const { success, error: showError } = useToast();
+
+  const isAuthenticated = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/account/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleRemove = (productId, productTitle) => {
     removeFromWishlist(productId);
@@ -16,6 +27,11 @@ const WishlistPage = () => {
 
   const handleAddToCart = async (product) => {
     try {
+      if (!isAuthenticated) {
+        showError("You must be logged in to add items to the cart.");
+        navigate("/account/login");
+        return;
+      }
       await addToCart({
         productId: product.productId,
         price: product.price,
@@ -148,6 +164,7 @@ const WishlistPage = () => {
                     <button
                       type="button"
                       onClick={() => handleAddToCart(item)}
+                      disabled={!isAuthenticated}
                       className="flex-1 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:shadow-lg hover:scale-105 active:scale-95"
                     >
                       <svg
@@ -172,4 +189,3 @@ const WishlistPage = () => {
 };
 
 export default WishlistPage;
-

@@ -67,7 +67,7 @@ const Card = ({
   };
 
   return (
-    <article className="group relative bg-white rounded-2xl overflow-_hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <article className="group relative bg-white rounded-2xl overflow-_hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-x-hidden">
       {/* Discount badge */}
       {oldPrice !== 0 && (
         <span className="absolute left-3 top-3 z-10 rounded-full bg-linear-to-r from-rose-500 to-rose-600 px-3 py-1 text-xs font-bold text-white shadow-lg">
@@ -97,6 +97,7 @@ const Card = ({
             success(`${title} removed from wishlist`);
           }
         }}
+        disabled={!isAuthenticated}
         aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         className={`absolute right-3 top-3 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 backdrop-blur-sm shadow-lg transition-all hover:scale-110 ${
           isWishlisted

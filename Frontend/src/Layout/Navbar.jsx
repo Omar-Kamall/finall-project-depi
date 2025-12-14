@@ -17,12 +17,15 @@ import {
 } from "../api/Products";
 import { logout } from "../api/auth";
 import { useUser } from "../context/UserContext";
+import { useWishlist } from "../context/WishlistContext";
 
 const Navbar = () => {
   const { user, setUser } = useUser();
   const isAuthenticated = localStorage.getItem("token");
   const { cartItems } = useCart();
   const lengthCartItems = cartItems.length;
+  const { wishlistItems } = useWishlist();
+  const lengthWishlistItems = wishlistItems.length;
   const navigate = useNavigate();
   const location = useLocation();
   const params = useParams();
@@ -387,7 +390,7 @@ const Navbar = () => {
                   to="/wishlist"
                   className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
-                  <Badge badgeContent={0} color="error">
+                  <Badge badgeContent={lengthWishlistItems} color="error">
                     <HiOutlineHeart className="text-xl text-gray-700" />
                   </Badge>
                 </Link>
@@ -523,7 +526,7 @@ const Navbar = () => {
                   to="/wishlist"
                   className="flex flex-col items-center p-2 hover:opacity-70 transition-opacity relative"
                 >
-                  <Badge badgeContent={0} color="error">
+                  <Badge badgeContent={lengthWishlistItems} color="error">
                     <HiOutlineHeart className="text-xl text-gray-700" />
                   </Badge>
                   <span className="text-xs text-gray-600 mt-1">WishList</span>
