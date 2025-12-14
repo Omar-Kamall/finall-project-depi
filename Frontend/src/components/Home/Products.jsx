@@ -14,6 +14,21 @@ const Products = () => {
   const [productsByCategory, setProductsByCategory] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [productsNum, setProductsNum] = useState(
+    window.innerWidth < 768 ? 2 : 4
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setProductsNum(window.innerWidth < 768 ? 2 : 4);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -72,7 +87,7 @@ const Products = () => {
       {/* Top Rated Section */}
       <h2 className="font-bold text-2xl mb-6">Top Rated:</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12 gap-6">
-        {topRated.filter(item => item.oldPrice !== 0).slice(0,4).map((p) => (
+        {topRated.filter(item => item.oldPrice !== 0).slice(0,productsNum).map((p) => (
           <Card
             key={p._id}
             productId={p._id}
@@ -112,7 +127,7 @@ const Products = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {productsByCategory[category].slice(0, 4).map((p) => (
+            {productsByCategory[category].slice(0, productsNum).map((p) => (
               <Card
                 key={p._id}
                 productId={p._id}
